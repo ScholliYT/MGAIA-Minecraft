@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "assignment"
+version = "0.1.0"
+description = ""
+authors = ["Tom Stein <dev@tomstein.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10, <3.12"
+gdpc = {git = "https://github.com/avdstaaij/gdpc"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
