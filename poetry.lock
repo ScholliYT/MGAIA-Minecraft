@@ -250,7 +250,7 @@ termcolor = "*"
 type = "git"
 url = "https://github.com/avdstaaij/gdpc"
 reference = "HEAD"
-resolved_reference = "7641f819b87aa7e639d488c98f2174ef9614e324"
+resolved_reference = "43a4971dd3014a2515777c45123d20a9422d4865"
 
 [[package]]
 name = "idna"
