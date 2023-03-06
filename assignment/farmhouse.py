@@ -31,21 +31,6 @@ logging.basicConfig(format=colored("%(name)s - %(levelname)s - %(message)s", col
 # Here we construct an Editor object
 ED = Editor(buffering=True)
 
-# Here we read start and end coordinates of our build area
-BUILD_AREA = ED.getBuildArea()  # BUILDAREA
-STARTX, STARTY, STARTZ = BUILD_AREA.begin
-LASTX, LASTY, LASTZ = BUILD_AREA.last
-
-# WORLDSLICE
-# Using the start and end coordinates we are generating a world slice
-# It contains all manner of information, including heightmaps and biomes
-# For further information on what information it contains, see
-# https://minecraft.fandom.com/wiki/Chunk_format
-#
-# IMPORTANT: Keep in mind that a wold slice is a 'snapshot' of the world,
-# and any changes you make later on will not be reflected in the world slice
-WORLDSLICE = ED.loadWorldSlice(BUILD_AREA.toRect(), cache=True)  # this takes a while
-
 
 # === STRUCTURE #3
 
@@ -55,6 +40,20 @@ def build_farmhouse_wall(bottom_left: ivec3 = ivec3(0,0,0)):
     geo.placeCuboidHollow(ED, bottom_left + ivec3(0,0,1), bottom_left + ivec3(0, 2, 5), Block("cobblestone"))
     geo.placeLine(ED, bottom_left + ivec3(0, 1, 2), bottom_left + ivec3(0,1,4), Block("glass_pane"))
     geo.placeLine(ED, bottom_left, bottom_left + (0, 2, 0), Block("oak_log"))
+
+    # add floor
+    geo.placeCuboid(ED, bottom_left + ivec3(0, -1, 0), bottom_left + ivec3(5, -1, 5), Block("oak_planks"))
+
+
+    return ivec3(1,3,6)
+
+def build_farmhouse_wall_double_pillar(bottom_left: ivec3 = ivec3(0,0,0)):
+    # Build a wall fragment in z direction
+    # on the bottom left block 1x3x6
+    geo.placeCuboidHollow(ED, bottom_left + ivec3(0,0,1), bottom_left + ivec3(0, 2, 4), Block("cobblestone"))
+    geo.placeLine(ED, bottom_left + ivec3(0, 1, 2), bottom_left + ivec3(0,1,3), Block("glass_pane"))
+    geo.placeLine(ED, bottom_left, bottom_left + (0, 2, 0), Block("oak_log"))
+    geo.placeLine(ED, bottom_left + (0,0,5), bottom_left + (0, 2, 5), Block("oak_log"))
 
     # add floor
     geo.placeCuboid(ED, bottom_left + ivec3(0, -1, 0), bottom_left + ivec3(5, -1, 5), Block("oak_planks"))
@@ -103,7 +102,7 @@ def build_farmhouse_wall_door(bottom_left: ivec3 = ivec3(0,0,0)):
 def main():
     try:
         print("Building prefab showcase")
-        prefabs = [build_farmhouse_wall, build_farmhouse_corner, build_farmhouse_wall_door]
+        prefabs = [build_farmhouse_wall, build_farmhouse_wall_double_pillar, build_farmhouse_corner, build_farmhouse_wall_door]
         with ED.pushTransform(Transform(translation=ivec3(-80,0,120))):
             # clear area
             geo.placeCuboid(ED, ivec3(0,-1,0), ivec3(10,2,0) + len(prefabs)*ivec3(0,0,10), Block("air"))
@@ -118,7 +117,7 @@ def main():
 
 
         print("Building house")
-        ED.transform @= Transform(translation=ivec3(-120,0,130))
+        ED.transform @= Transform(translation=ivec3(-120,0,150))
 
         SIDE_LENGHT = 3
         for i in range(SIDE_LENGHT):
