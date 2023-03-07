@@ -1,0 +1,191 @@
+\documentclass[
+oneside,
+fontsize=11pt
+]{scrartcl}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% packages
+%%%
+
+%%%
+%%% encoding and language set
+%%%
+
+
+\usepackage[english]{babel}
+\usepackage[a4paper]{geometry}
+
+%%% fontenc, ae, aecompl: coding of characters in PDF documents
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage[autostyle=true,german=quotes]{csquotes}
+\usepackage{caption}
+\usepackage{subcaption}
+% \usepackage{minted}
+
+%%%
+%%% technical packages
+%%%
+
+% \usepackage{svg}
+
+%%% pgf plots from matplotlib tikzplotlib
+\usepackage{pgfplots}
+\DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+\pgfplotsset{compat=newest}
+
+%%% amsmath, amssymb, amstext: support for mathematics
+\usepackage{amsmath,amssymb,amstext}
+
+
+%%%
+%%% Colors
+%%%
+\definecolor{TUGreen}{rgb}{0.517,0.721,0.094}
+
+
+%%%
+%%% Macros
+%%%
+\newtheorem{mydef}{Definition}
+\newcommand{\mydefautorefname}{Definition}
+
+
+
+\usepackage{graphicx}
+
+%%% hyperref (hyperlinks in PDF): for more options or more detailed
+%%%          explanations, see the documentation of the hyperref-package
+\usepackage[%
+  %%% general options
+  pdftex=true,      %% sets up hyperref for use with the pdftex program
+  %plainpages=false, %% set it to false, if pdflatex complains: ``destination with same identifier already exists''
+  %
+  %%% extension options
+  backref,      %% adds a backlink text to the end of each item in the bibliography
+  pagebackref=false, %% if true, creates backward references as a list of page numbers in the bibliography
+  colorlinks=true,   %% turn on colored links (true is better for on-screen reading, false is better for printout versions)
+  linkcolor=TUGreen,
+  urlcolor=TUGreen,
+  %
+  %%% PDF-specific display options
+  bookmarks=true,          %% if true, generate PDF bookmarks (requires two passes of pdflatex)
+  bookmarksopen=true,     %% if true, show all PDF bookmarks expanded
+  bookmarksnumbered=true, %% if true, add the section numbers to the bookmarks
+  %pdfstartpage={1},        %% determines, on which page the PDF file is opened
+  pdfpagemode=None         %% None, UseOutlines (=show bookmarks), UseThumbs (show thumbnails), FullScreen
+]{hyperref}
+
+
+%%% sets the PDF-Information options
+%%% (see fields in Acrobat Reader: ``File -> Document properties -> Summary'')
+%%% Note: this method is better than as options of the hyperref-package (options are expanded correctly)
+\hypersetup{
+  pdftitle={Fréchet Distance}, %%
+  pdfauthor={Tom Stein}, %%
+  pdfsubject={Seminar Algorithm Engineering 22/23}, %%
+  pdfcreator={Accomplished with LaTeX2e and pdfLaTeX with hyperref-package.}, %% 
+  pdfproducer={}, %%
+  pdfkeywords={} %%
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% define the titlepage
+%%%
+
+% \subject{}   %% subject which appears above titlehead
+% \titlehead{} %% special heading for the titlepage
+
+%%% title
+\title{Procedural Content Generation}
+
+%%% author(s)
+\author{Tom Stein}
+
+%%% date
+\date{February-March 2023}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document
+%%%
+
+\begin{document}
+
+% \pagenumbering{roman} %% small roman page numbers
+
+%%% include the title
+% \thispagestyle{empty}  %% no header/footer (only) on this page
+%  \maketitle
+
+% Titlepage ---------------------------------------------------------
+%
+\pdfbookmark{Titelpage}{pdf:title}
+\include{titlepage}
+
+
+%%% start a new page and display the table of contents
+% \newpage
+% \tableofcontents
+
+%%% start a new page and display the list of figures
+% \newpage
+% \listoffigures
+
+%%% start a new page and display the list of tables
+% \newpage
+% \listoftables
+
+%%% display the main document on a new page 
+\newpage
+
+% \pagenumbering{arabic} %% normal page numbers (include it, if roman was used above)
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin main document
+%%% structure: \section \subsection \subsubsection \paragraph \subparagraph
+%%%
+
+\newgeometry{left=3cm, right=4cm, top=3cm, bottom=3cm}
+
+\section*{Abstract}
+
+
+\section{Introduction}
+
+
+%%%
+%%% end main document
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\appendix  %% include it, if something (bibliography, index, ...) follows below
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% bibliography
+%%%
+%%% available styles: abbrv, acm, alpha, apalike, ieeetr, plain, siam, unsrt
+%%%
+\bibliographystyle{alpha}
+
+%%% name of the bibliography file without .bib
+%%% e.g.: literature.bib -> \bibliography{literature}
+\bibliography{literature}
+
+\end{document}
+%%% }}}
+%%% END OF FILE
