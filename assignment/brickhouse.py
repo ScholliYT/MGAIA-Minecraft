@@ -9,6 +9,7 @@
 import logging
 import pickle
 from random import randint
+from typing import List, Tuple
 
 from termcolor import colored
 
@@ -56,51 +57,57 @@ def main():
 
 
         print("Building house")
-        ED.transform @= Transform(translation=ivec3(-110, -1, -70))
+        ED.transform @= Transform(translation=ivec3(-190, -1, 180))
 
-        structure_name = "brickhouse-entrance"
-        structure = load_structure(structure_name)
+        entrance_structure = load_structure("brickhouse-entrance")
+        middle_structure = load_structure("brickhouse-middle")
+        balcony_structure = load_structure("brickhouse-balcony")
+        corner_structure = load_structure("brickhouse-corner")
 
-
-        print("Replicating building")
         
-        with ED.pushTransform(Transform(rotation=0)):
-            for vec, block in structure.blocks.items():
-                ED.placeBlock(vec, block)
+        # same for all strucures
+        strucutre_size = entrance_structure.size
+
+
+        # building: List[List[Tuple[Structure, int]]] = [
+        #     [(entrance_structure, 1), (entrance_structure, 2)],
+        #     [(middle_structure, 0), (middle_structure, 2)],
+        #     [(middle_structure, 0), (middle_structure, 2)],
+        #     [(entrance_structure, 0), (entrance_structure, 3)],
+        # ]
+
+        building: List[List[Tuple[Structure, int]]] = [
+            [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
+            [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
+        ]
+
+        # building: List[List[Tuple[Structure, int]]] = [
+        #     [(entrance_structure, 1), (middle_structure, 1), (balcony_structure, 2)],
+        #     [(entrance_structure, 0), (middle_structure, 3), (corner_structure, 3)],
+        # ]
+
+
+        for row_idx, building_row in enumerate(reversed(building)):
+            with ED.pushTransform(Transform(translation=ivec3(row_idx*strucutre_size.x, 0, 0))):
+                for col_idx, (strucutre, rotation) in enumerate(building_row):
+                    with ED.pushTransform(Transform(translation=ivec3(0, 0, col_idx*strucutre_size.z))):
+
+                        # adjust for rotation respecing bottom left corner aligned coordinate system of structure
+                        if rotation == 0:
+                            translation_vec = ivec3(0, 0, 0)
+                        elif rotation == 1:
+                            translation_vec = ivec3(strucutre.size.x - 1, 0, 0)
+                        elif rotation == 2:
+                            translation_vec = ivec3(strucutre.size.x - 1, 0, strucutre.size.z -1)
+                        elif rotation == 3:
+                            translation_vec = ivec3(0, 0, strucutre.size.z -1)
+
+                        
+                        with ED.pushTransform(Transform(translation=translation_vec)):
+                            with ED.pushTransform(Transform(rotation=rotation)):
+                                for vec, block in strucutre.blocks.items():
+                                    ED.placeBlock(vec, block)
         ED.flushBuffer()
-
-        with ED.pushTransform(Transform(translation=ivec3(2*structure.size.x-1, 0, 0))):
-            with ED.pushTransform(Transform(rotation=1)):
-                for vec, block in structure.blocks.items():
-                    ED.placeBlock(vec, block)
-        ED.flushBuffer()
-
-        with ED.pushTransform(Transform(translation=ivec3(2*structure.size.x-1, 0, 2*structure.size.z-1))):
-            with ED.pushTransform(Transform(rotation=2)):
-                for vec, block in structure.blocks.items():
-                    ED.placeBlock(vec, block)
-        ED.flushBuffer()
-
-        with ED.pushTransform(Transform(translation=ivec3(0, 0, 2*structure.size.z-1))):
-            with ED.pushTransform(Transform(rotation=3)):
-                for vec, block in structure.blocks.items():
-                    ED.placeBlock(vec, block)
-        ED.flushBuffer()
-
-        # SIDE_LENGHT = 3
-        # for i in range(SIDE_LENGHT):
-        #     with ED.pushTransform(Transform(translation=i*ivec3(0,0,6))):
-        #         build_farmhouse_wall()
-
-        # with ED.pushTransform():
-        #     for n in range(3):
-        #         ED.transform @= Transform(translation=(SIDE_LENGHT)*ivec3(0,0,6), rotation=3)
-        #         for i in range(SIDE_LENGHT):
-        #             with ED.pushTransform(Transform(translation=i*ivec3(0,0,6))):
-        #                 build_farmhouse_wall()
-
-        # with ED.pushTransform(Transform(translation=(SIDE_LENGHT//2)*ivec3(0,0,6))):
-        #     build_farmhouse_wall_door()
         
 
         print("Done!")

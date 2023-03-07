@@ -1,9 +1,9 @@
 """
 Load a building block sturucte
 
-stand at the bottom left corner of the builing block and look towards it
+stand in front of the bottom left corner of the builing block and look towards it
 Building is expected to be 11x16x11
-/setbuildarea ~2 ~ ~ ~11 ~16 ~10
+/setbuildarea ~1 ~ ~ ~11 ~16 ~10
 """
 
 from dataclasses import dataclass
@@ -58,11 +58,11 @@ worldSlice = editor.loadWorldSlice(buildRect, cache=True)
 print("World slice loaded!")
 
 
-
+print("Sturcutre bottom left corner", buildArea.offset)
 print("Strucutre size", buildArea.size)
 print("Structure blocks", buildArea.volume)
 
-structure = Structure(name="brickhouse-middle", offset=buildArea.offset, size=buildArea.size, blocks={})
+structure = Structure(name="brickhouse-big-window-flat-roof", offset=buildArea.offset, size=buildArea.size, blocks={})
 print("Scanning structure", structure.name)
 for block_global in buildArea.inner:
     vec = block_global - buildArea.offset
