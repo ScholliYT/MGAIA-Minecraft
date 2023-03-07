@@ -1,45 +1,69 @@
-#!/usr/bin/env python3
-
-
-
-# === STRUCTURE #1
-# These are the modules (libraries) we will use in this code
-# We are giving these modules shorter, but distinct, names for convenience
-
-import logging
-import pickle
-from random import randint
 from typing import List, Tuple
 
-from termcolor import colored
 
-from gdpc import Block, Editor, Transform
-from gdpc import geometry as geo
-from gdpc import minecraft_tools as mt
-from gdpc import editor_tools as et
+from gdpc import Editor, Transform
 from glm import ivec3
 
 from assignment.utils.structure import Structure, load_structure
 
 
-# Here, we set up Python's logging system.
-# GDPC sometimes logs some errors that it cannot otherwise handle.
-logging.basicConfig(format=colored("%(name)s - %(levelname)s - %(message)s", color="yellow"))
+# === STRUCTURE
+
+def build_brickhouse(editor: Editor):
+    entrance_structure = load_structure("brickhouse-entrance")
+    middle_structure = load_structure("brickhouse-middle")
+    balcony_structure = load_structure("brickhouse-balcony")
+    corner_structure = load_structure("brickhouse-corner")
+
+    
+    # same for all strucures
+    strucutre_size = entrance_structure.size
 
 
-# === STRUCTURE #2
-# These variables are global and can be read from anywhere in the code.
-# NOTE: If you want to change a global value inside one of your functions,
-#       you'll have to add a line of code. For an example, search 'GLOBAL'.
+    # building: List[List[Tuple[Structure, int]]] = [
+    #     [(entrance_structure, 1), (entrance_structure, 2)],
+    #     [(middle_structure, 0), (middle_structure, 2)],
+    #     [(middle_structure, 0), (middle_structure, 2)],
+    #     [(entrance_structure, 0), (entrance_structure, 3)],
+    # ]
 
-# Here we construct an Editor object
-ED = Editor(buffering=True)
+    building: List[List[Tuple[Structure, int]]] = [
+        [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
+        [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
+    ]
+
+    # building: List[List[Tuple[Structure, int]]] = [
+    #     [(entrance_structure, 1), (middle_structure, 1), (balcony_structure, 2)],
+    #     [(entrance_structure, 0), (middle_structure, 3), (corner_structure, 3)],
+    # ]
 
 
-# === STRUCTURE #3
+    for row_idx, building_row in enumerate(reversed(building)):
+        with editor.pushTransform(Transform(translation=ivec3(row_idx*strucutre_size.x, 0, 0))):
+            for col_idx, (strucutre, rotation) in enumerate(building_row):
+                with editor.pushTransform(Transform(translation=ivec3(0, 0, col_idx*strucutre_size.z))):
+
+                    # adjust for rotation respecing bottom left corner aligned coordinate system of structure
+                    if rotation == 0:
+                        translation_vec = ivec3(0, 0, 0)
+                    elif rotation == 1:
+                        translation_vec = ivec3(strucutre.size.x - 1, 0, 0)
+                    elif rotation == 2:
+                        translation_vec = ivec3(strucutre.size.x - 1, 0, strucutre.size.z -1)
+                    elif rotation == 3:
+                        translation_vec = ivec3(0, 0, strucutre.size.z -1)
+
+                    
+                    with editor.pushTransform(Transform(translation=translation_vec)):
+                        with editor.pushTransform(Transform(rotation=rotation)):
+                            for vec, block in strucutre.blocks.items():
+                                editor.placeBlock(vec, block)
+    editor.flushBuffer()
 
 
 def main():
+    ED = Editor(buffering=True)
+
     try:
         # print("Building prefab showcase")
         # prefabs = [build_entrance]
@@ -55,59 +79,12 @@ def main():
         #     ED.flushBuffer()
 
 
+        ED.transform @= Transform(translation=ivec3(-210, -1, 250))
 
         print("Building house")
-        ED.transform @= Transform(translation=ivec3(-190, -1, 180))
-
-        entrance_structure = load_structure("brickhouse-entrance")
-        middle_structure = load_structure("brickhouse-middle")
-        balcony_structure = load_structure("brickhouse-balcony")
-        corner_structure = load_structure("brickhouse-corner")
+        build_brickhouse(editor=ED)
 
         
-        # same for all strucures
-        strucutre_size = entrance_structure.size
-
-
-        # building: List[List[Tuple[Structure, int]]] = [
-        #     [(entrance_structure, 1), (entrance_structure, 2)],
-        #     [(middle_structure, 0), (middle_structure, 2)],
-        #     [(middle_structure, 0), (middle_structure, 2)],
-        #     [(entrance_structure, 0), (entrance_structure, 3)],
-        # ]
-
-        building: List[List[Tuple[Structure, int]]] = [
-            [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
-            [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
-        ]
-
-        # building: List[List[Tuple[Structure, int]]] = [
-        #     [(entrance_structure, 1), (middle_structure, 1), (balcony_structure, 2)],
-        #     [(entrance_structure, 0), (middle_structure, 3), (corner_structure, 3)],
-        # ]
-
-
-        for row_idx, building_row in enumerate(reversed(building)):
-            with ED.pushTransform(Transform(translation=ivec3(row_idx*strucutre_size.x, 0, 0))):
-                for col_idx, (strucutre, rotation) in enumerate(building_row):
-                    with ED.pushTransform(Transform(translation=ivec3(0, 0, col_idx*strucutre_size.z))):
-
-                        # adjust for rotation respecing bottom left corner aligned coordinate system of structure
-                        if rotation == 0:
-                            translation_vec = ivec3(0, 0, 0)
-                        elif rotation == 1:
-                            translation_vec = ivec3(strucutre.size.x - 1, 0, 0)
-                        elif rotation == 2:
-                            translation_vec = ivec3(strucutre.size.x - 1, 0, strucutre.size.z -1)
-                        elif rotation == 3:
-                            translation_vec = ivec3(0, 0, strucutre.size.z -1)
-
-                        
-                        with ED.pushTransform(Transform(translation=translation_vec)):
-                            with ED.pushTransform(Transform(rotation=rotation)):
-                                for vec, block in strucutre.blocks.items():
-                                    ED.placeBlock(vec, block)
-        ED.flushBuffer()
         
 
         print("Done!")
