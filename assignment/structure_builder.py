@@ -6,17 +6,13 @@ Building is expected to be 11x16x11
 /setbuildarea ~2 ~ ~ ~11 ~16 ~10
 """
 
-from dataclasses import dataclass
 import pickle
 import sys
-from typing import Dict, List, Tuple
 from glm import ivec3
 
-import numpy as np
 
-from gdpc import __url__, Editor, Block, Transform
-from gdpc.exceptions import InterfaceConnectionError, BuildAreaNotSetError
-from gdpc.vector_tools import addY
+from gdpc import __url__, Editor, Transform
+from gdpc.exceptions import InterfaceConnectionError
 
 from assignment.utils.structure import Structure
 
