@@ -4,10 +4,12 @@ from typing import List, Tuple
 from gdpc import Editor, Transform
 from glm import ivec3
 
-from assignment.utils.structure import Structure, load_structure
+from assignment.utils.structure import Structure, load_structure, build_structure
 
 
 # === STRUCTURE
+
+
 
 def build_brickhouse(editor: Editor):
     entrance_structure = load_structure("brickhouse-entrance")
@@ -40,24 +42,10 @@ def build_brickhouse(editor: Editor):
 
     for row_idx, building_row in enumerate(reversed(building)):
         with editor.pushTransform(Transform(translation=ivec3(row_idx*strucutre_size.x, 0, 0))):
-            for col_idx, (strucutre, rotation) in enumerate(building_row):
+            for col_idx, (structure, rotation) in enumerate(building_row):
                 with editor.pushTransform(Transform(translation=ivec3(0, 0, col_idx*strucutre_size.z))):
-
-                    # adjust for rotation respecing bottom left corner aligned coordinate system of structure
-                    if rotation == 0:
-                        translation_vec = ivec3(0, 0, 0)
-                    elif rotation == 1:
-                        translation_vec = ivec3(strucutre.size.x - 1, 0, 0)
-                    elif rotation == 2:
-                        translation_vec = ivec3(strucutre.size.x - 1, 0, strucutre.size.z -1)
-                    elif rotation == 3:
-                        translation_vec = ivec3(0, 0, strucutre.size.z -1)
-
+                    build_structure(editor, structure, rotation)
                     
-                    with editor.pushTransform(Transform(translation=translation_vec)):
-                        with editor.pushTransform(Transform(rotation=rotation)):
-                            for vec, block in strucutre.blocks.items():
-                                editor.placeBlock(vec, block)
     editor.flushBuffer()
 
 
