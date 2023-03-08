@@ -88,3 +88,35 @@ class WaveFunctionCollaplse2x2x2Test(unittest.TestCase):
             print("Layer y="+str(y))
             for x in reversed(range(self.wfc.state_space_size[0])):
                 print(self.wfc.state_space[x][y])
+
+class WaveFunctionCollaplse3x1x3Test(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.wfc = WaveFunctionCollapse((3,1,3), structure_adjecencies)
+        return super().setUp()
+
+    def test_collapses(self):
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 50)
+
+        print("WFC collapsed after", retries, "retries")
+        for y in range(self.wfc.state_space_size[1]):
+            print("Layer y="+str(y))
+            for x in reversed(range(self.wfc.state_space_size[0])):
+                print(self.wfc.state_space[x][y])
+
+class WaveFunctionCollaplse10x1x10Test(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.wfc = WaveFunctionCollapse((10,1,10), structure_adjecencies)
+        return super().setUp()
+
+    def test_collapses(self):
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 100)
+
+        print("WFC collapsed after", retries, "retries")
+        for y in range(self.wfc.state_space_size[1]):
+            print("Layer y="+str(y))
+            for x in reversed(range(self.wfc.state_space_size[0])):
+                print(self.wfc.state_space[x][y])

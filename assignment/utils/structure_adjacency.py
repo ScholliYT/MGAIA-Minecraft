@@ -74,7 +74,7 @@ brickhouse_entrance = "brickhouse-entrance"
 brickhouse_middle = "brickhouse-middle"
 # brickhouse_balcony = "brickhouse-balcony"
 # brickhouse_corner = "brickhouse-corner"
-# brickhouse_center = "brickhouse-center"
+brickhouse_center = "brickhouse-center"
 
 # roofs
 # brickhouse_small_window_flat_roof = "brickhouse-small-window-flat-roof"
@@ -82,7 +82,8 @@ brickhouse_middle = "brickhouse-middle"
 brickhouse_roofhouse_corner = "brickhouse-roofhouse-corner"
 brickhouse_roofhouse_middle = "brickhouse-roofhouse-middle"
 
-
+def all_rotations(structure: str):
+    return [StructureRotation(structure, r) for r in range(4)]
 
 
 structure_adjecencies = {
@@ -113,9 +114,33 @@ structure_adjecencies = {
         ],
         z_plus=[
             StructureRotation(brickhouse_middle, 2),
+            *all_rotations(brickhouse_center),
         ],
         y_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 0),
+        ]
+    ),
+    brickhouse_center: StructureAdjacency(
+        structure_name=brickhouse_center,
+        x_plus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 1),
+        ],
+        x_minus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 3),
+        ],
+        z_plus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 2),
+        ],
+        z_minus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 0),
+        ],
+        y_plus=[
+            # TODO:
+            #StructureRotation(brickhouse_roofhouse_middle, 0),
         ]
     ),
     brickhouse_roofhouse_corner: StructureAdjacency(

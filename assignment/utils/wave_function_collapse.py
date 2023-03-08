@@ -143,12 +143,16 @@ class WaveFunctionCollapse:
         
         return True
     
-    def collapse_with_retry(self) -> int:
+    def collapse_with_retry(self, max_retry=1000) -> int:
         retry_counter = 0
 
         while not self.collapse():
             self._initialize_state_space()
             retry_counter += 1
+
+            if retry_counter > max_retry:
+                raise Exception(f"WFC did not collapse after {max_retry} retries.")
+        
         return retry_counter
 
             
