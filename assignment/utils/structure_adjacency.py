@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@dataclass
+@dataclass(frozen=True)
 class StructureRotation:
     structure_name: str
     rotation: int
@@ -16,7 +16,7 @@ class StructureRotation:
         return replace(self, rotation=(self.rotation + amount) % 4)
         
 
-@dataclass
+@dataclass(frozen=True)
 class StructureAdjacency:
     """Store all possible other Structures that can be placed next to this structure
 
@@ -154,6 +154,15 @@ structure_adjecencies = {
 
 
 def check_symmetry(structure_adjecencies: Dict[str, StructureAdjacency]):
+    """Verify that the symmetric coutnerpart for each rule is present
+
+    Args:
+        structure_adjecencies (Dict[str, StructureAdjacency]): structures and their adjecency rules
+
+    Raises:
+        Exception: if no rule was found
+        Exception: if too many rules were found
+    """
     self_rotation = 0
     for s_name in structure_adjecencies.keys():
         adj = structure_adjecencies[s_name]
@@ -173,7 +182,7 @@ def check_symmetry(structure_adjecencies: Dict[str, StructureAdjacency]):
                     logger.error("%s.%s: Symmetric rule for %s not found", s_name, axis, rule)
                     raise Exception("Expected rule not found")
                 elif len(matching_rules) > 1:
-                    logger.error("%s.%s: Multiple symmetric rules for %s found", s_name, axis, rule)
+                    logger.error("%s.%s: Multiple symmetric rules for %s found: %s", s_name, axis, rule, matching_rules)
                     raise Exception("Found too many rules")
 
 

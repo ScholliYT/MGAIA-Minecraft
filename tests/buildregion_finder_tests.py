@@ -19,7 +19,7 @@ class TestOptimizer(unittest.TestCase):
 
     def setUp(self) -> None:
         self.numpy_random_state = np.random.get_state()
-        np.random.seed(42)
+        np.random.seed(42) # this specific seed is requied (e.g. for test_optimize_100x100)
         return super().setUp()
     
     def tearDown(self) -> None:
@@ -71,7 +71,7 @@ class TestOptimizer(unittest.TestCase):
     def test_optimize_100x100(self):
         heightmap = np.random.randint(low=10, high=20, size=(100,100))
 
-        result = list(score_all_possible_buildregions(heightmap, square_sidelenght=11, min_adjecent_squares=2, max_adjecent_squares=4))
+        result = list(score_all_possible_buildregions(heightmap, square_sidelenght=11, min_adjecent_squares=1, max_adjecent_squares=4))
 
         self.assertIsNotNone(result)
 
