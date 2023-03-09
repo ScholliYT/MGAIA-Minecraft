@@ -42,5 +42,7 @@ def score_all_possible_buildregions(heights: np.ndarray, square_sidelenght=11, m
             
             y_mean = int(np.mean(heights_slice))
             for y in range(y_mean-1, y_mean+2):
+                if y == 63:
+                    continue # water level
                 distance = terraform_distance(heights, y, origin, size)
                 yield  origin, size, y, distance
