@@ -91,21 +91,25 @@ structure_adjecencies = {
             *all_rotations(empty_space_air),
             StructureRotation(brickhouse_entrance, 1).rotate(3), # from brickhouse_entrance.x_minus
             StructureRotation(brickhouse_entrance, 1).rotate(2), # from brickhouse_entrance.z_minus
+            StructureRotation(brickhouse_middle, 1).rotate(2), # from brickhouse_middle.z_minus
         ],
         x_minus=[
             *all_rotations(empty_space_air),
             StructureRotation(brickhouse_entrance, 3).rotate(3), # from brickhouse_entrance.x_minus
             StructureRotation(brickhouse_entrance, 3).rotate(2), # from brickhouse_entrance.z_minus
+            StructureRotation(brickhouse_middle, 3).rotate(2), # from brickhouse_middle.z_minus
         ],
         z_plus=[
             *all_rotations(empty_space_air),
             StructureRotation(brickhouse_entrance, 2).rotate(3), # from brickhouse_entrance.x_minus
             StructureRotation(brickhouse_entrance, 2).rotate(2), # from brickhouse_entrance.z_minus
+            StructureRotation(brickhouse_middle, 2).rotate(2), # from brickhouse_middle.z_minus
         ],
         z_minus=[
             *all_rotations(empty_space_air),
             StructureRotation(brickhouse_entrance, 0).rotate(3), # from brickhouse_entrance.x_minus
             StructureRotation(brickhouse_entrance, 0).rotate(2), # from brickhouse_entrance.z_minus
+            StructureRotation(brickhouse_middle, 0).rotate(2), # from brickhouse_middle.z_minus
         ],
     ),
     brickhouse_entrance: StructureAdjacency(

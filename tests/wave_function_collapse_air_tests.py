@@ -69,7 +69,7 @@ class WaveFunctionCollaplse2x1x2_Air_Test(unittest.TestCase):
 class WaveFunctionCollaplse3x1x3_Air_Test(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.wfc = WaveFunctionCollapse((3,1,2), structure_adjecencies)
+        self.wfc = WaveFunctionCollapse((3,1,3), structure_adjecencies)
         return super().setUp()
     
     def test_collapses_top_right(self):
@@ -86,6 +86,17 @@ class WaveFunctionCollaplse3x1x3_Air_Test(unittest.TestCase):
 
         print("WFC collapsed after", retries, "retries")
         print_state(self.wfc)
+
+    def test_collapses_to_2x2_house(self):
+        self.wfc.collapse_cell([0,0,0], StructureRotation("brickhouse-entrance", 0))
+        self.wfc.collapse_cell([0,0,1], StructureRotation("brickhouse-entrance", 3))
+        self.wfc.collapse_cell([1,0,0], StructureRotation("brickhouse-entrance", 1))
+        self.wfc.collapse_cell([1,0,1], StructureRotation("brickhouse-entrance", 2))
+
+        self.wfc.collapse_cell([2,0,2], empty_space_air_structure)
+
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 1)
 
     def test_collapses_middle_right(self):
         print_state(self.wfc)
