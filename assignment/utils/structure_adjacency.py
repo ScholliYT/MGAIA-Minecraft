@@ -226,8 +226,7 @@ structure_adjecencies = {
             StructureRotation(brickhouse_middle, 0),
         ],
         y_plus=[
-            StructureRotation(brickhouse_roofhouse_courtyard, 0),
-            # *all_rotations(brickhouse_roofhouse_courtyard)
+            *all_rotations(brickhouse_roofhouse_courtyard)
         ]
     ),
     brickhouse_roofhouse_corner: StructureAdjacency(
@@ -291,7 +290,7 @@ structure_adjecencies = {
             StructureRotation(brickhouse_roofhouse_middle, 0),
         ],
         y_minus=[
-            StructureRotation(brickhouse_courtyard, 0),
+            *all_rotations(brickhouse_courtyard)
         ]
     )
 }
