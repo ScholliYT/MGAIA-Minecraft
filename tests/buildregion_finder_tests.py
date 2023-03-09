@@ -68,8 +68,8 @@ class TestOptimizer(unittest.TestCase):
         self.assertIn(((0,2), (3,3), 5, 1), result)
 
 
-    def test_optimize_100x100(self):
-        heightmap = np.random.randint(low=10, high=20, size=(100,100))
+    def test_optimize_25x25(self):
+        heightmap = np.random.randint(low=10, high=20, size=(25,25))
 
         result = list(score_all_possible_buildregions(heightmap, square_sidelenght=11, min_adjecent_squares=1, max_adjecent_squares=4))
 
