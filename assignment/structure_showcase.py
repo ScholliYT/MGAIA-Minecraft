@@ -13,6 +13,7 @@ from assignment.utils.structures import (
     brickhouse_courtyard,
     brickhouse_entrance,
     brickhouse_middle,
+    brickhouse_roofhouse_center,
     brickhouse_roofhouse_corner,
     brickhouse_roofhouse_courtyard,
     brickhouse_roofhouse_middle,
@@ -57,6 +58,7 @@ def main():
             load_structure(brickhouse_roofhouse_middle),
             load_structure(brickhouse_roofhouse_courtyard),
             load_structure(brickhouse_center),
+            load_structure(brickhouse_roofhouse_center),
             load_structure(brickhouse_small_window_flat_roof),
             load_structure(brickhouse_big_window_flat_roof),
         ]

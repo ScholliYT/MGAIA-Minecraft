@@ -5,13 +5,14 @@ from typing import Dict, List
 from assignment.utils.structures import (
     brickhouse_balcony,
     brickhouse_big_window_flat_roof,
-    brickhouse_courtyard,
-    brickhouse_roofhouse_courtyard,
     brickhouse_center,
     brickhouse_corner,
+    brickhouse_courtyard,
     brickhouse_entrance,
     brickhouse_middle,
+    brickhouse_roofhouse_center,
     brickhouse_roofhouse_corner,
+    brickhouse_roofhouse_courtyard,
     brickhouse_roofhouse_middle,
     brickhouse_small_window_flat_roof,
     empty_space_air,
@@ -210,6 +211,9 @@ structure_adjecencies = {
             *all_rotations(brickhouse_center),
             StructureRotation(brickhouse_middle, 0),
         ],
+        y_plus=[
+            *all_rotations(brickhouse_roofhouse_center)
+        ]
     ),
     brickhouse_courtyard: StructureAdjacency(
         structure_name=brickhouse_courtyard,
@@ -270,6 +274,7 @@ structure_adjecencies = {
         z_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 2),
             *all_rotations(brickhouse_roofhouse_courtyard),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         y_minus=[
             StructureRotation(brickhouse_middle, 0),
@@ -279,18 +284,44 @@ structure_adjecencies = {
         structure_name=brickhouse_roofhouse_courtyard,
         x_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 1),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         x_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 3),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         z_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 2),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         z_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 0),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         y_minus=[
             *all_rotations(brickhouse_courtyard)
+        ]
+    ),
+    brickhouse_roofhouse_center: StructureAdjacency(
+        structure_name=brickhouse_roofhouse_center,
+        x_plus=[
+            StructureRotation(brickhouse_roofhouse_middle, 1),
+            *all_rotations(brickhouse_roofhouse_courtyard),
+        ],
+        x_minus=[
+            StructureRotation(brickhouse_roofhouse_middle, 3),
+            *all_rotations(brickhouse_roofhouse_courtyard),
+        ],
+        z_plus=[
+            StructureRotation(brickhouse_roofhouse_middle, 2),
+            *all_rotations(brickhouse_roofhouse_courtyard),
+        ],
+        z_minus=[
+            StructureRotation(brickhouse_roofhouse_middle, 0),
+            *all_rotations(brickhouse_roofhouse_courtyard),
+        ],
+        y_minus=[
+            *all_rotations(brickhouse_center)
         ]
     )
 }
