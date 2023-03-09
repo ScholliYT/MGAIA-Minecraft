@@ -2,8 +2,8 @@
 Load a building block sturucte
 
 stand in front of the bottom left corner of the builing block and look towards it
-Building is expected to be 11x16x11
-/setbuildarea ~1 ~ ~ ~11 ~16 ~10
+Building is expected to be 11x5x11
+/setbuildarea ~1 ~ ~ ~11 ~5 ~10
 """
 
 import pickle
@@ -57,7 +57,7 @@ print("Sturcutre bottom left corner", buildArea.offset)
 print("Strucutre size", buildArea.size)
 print("Structure blocks", buildArea.volume)
 
-structure = Structure(name="brickhouse-center-flat-roof", offset=buildArea.offset, size=buildArea.size, blocks={})
+structure = Structure(name="empty-space-air", offset=buildArea.offset, size=buildArea.size, blocks={})
 print("Scanning structure", structure.name)
 for block_global in buildArea.inner:
     vec = block_global - buildArea.offset
