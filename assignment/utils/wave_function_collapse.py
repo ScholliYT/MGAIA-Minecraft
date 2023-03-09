@@ -85,7 +85,7 @@ class WaveFunctionCollapse:
     def propagate(self, cell_xyz: Tuple[int,int,int], remaining_states: Set[StructureRotation]):
         x,y,z = cell_xyz
         if not remaining_states.issubset(self.state_space[x][y][z]):
-            raise Exception("Tried to colappse a state to values that are not available in current superposition")
+            raise Exception(f"Tried to colappse a state to values that are not available in current superposition: {remaining_states}")
         elif remaining_states == self.state_space[x][y][z]:
             # there is no change and nothing needs to be propagated further
             return

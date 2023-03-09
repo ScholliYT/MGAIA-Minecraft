@@ -1,6 +1,7 @@
+import itertools
 import unittest
 
-from assignment.utils.structure_adjacency import StructureRotation, structure_adjecencies
+from assignment.utils.structure_adjacency import StructureRotation, structure_adjecencies, all_rotations
 from assignment.utils.structures import (
     brickhouse_balcony,
     brickhouse_big_window_flat_roof,
@@ -25,6 +26,18 @@ def print_state(wfc: WaveFunctionCollapse):
         print("Layer y="+str(y))
         for x in reversed(range(wfc.state_space_size[0])):
             print(wfc.state_space[x][y])
+
+def collapse_to_air_on_outer_rectangle(wfc: WaveFunctionCollapse):
+        for x in range(wfc.state_space_size[0]):
+            last = wfc.state_space_size[2]-1
+            wfc.collapse_cell([x,0,0], StructureRotation(empty_space_air, 0))
+            wfc.collapse_cell([x,0,last], StructureRotation(empty_space_air, 0))
+
+        for z in range(wfc.state_space_size[2]):
+            last = wfc.state_space_size[0]-1
+            wfc.collapse_cell([0,0,z], StructureRotation(empty_space_air, 0))
+            wfc.collapse_cell([last,0,z], StructureRotation(empty_space_air, 0))
+
 
 class WaveFunctionCollaplse2x1x1_Air_Test(unittest.TestCase):
 
@@ -135,11 +148,6 @@ class WaveFunctionCollaplse3x1x3_Air_Test(unittest.TestCase):
 
         print_state(self.wfc)
         self.assertIn(empty_space_air_structure, self.wfc.state_space[1][0][0])
-        # self.assertIn(empty_space_air_structure, self.wfc.state_space[1][0][0])
-        # self.assertIn(empty_space_air_structure, self.wfc.state_space[0][0][1])
-
-        # self.assertIn(empty_space_air_structure, self.wfc.state_space[1][0][1])
-        # self.assertIn(StructureRotation(brickhouse_entrance, 0), self.wfc.state_space[1][0][1])
 
         retries = self.wfc.collapse_with_retry()
         self.assertLessEqual(retries, 50)
@@ -147,3 +155,42 @@ class WaveFunctionCollaplse3x1x3_Air_Test(unittest.TestCase):
         print("WFC collapsed after", retries, "retries")
         print_state(self.wfc)
 
+
+
+class WaveFunctionCollaplse5x1x5_Surrounded_Air_Test(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.wfc = WaveFunctionCollapse((5,1,5), structure_adjecencies)
+        collapse_to_air_on_outer_rectangle(self.wfc)
+        return super().setUp()
+    
+    def _assert_centered_3x3_building(self):
+        for r in range(4):
+            air = StructureRotation(empty_space_air, r)
+            for x,y in itertools.product(range(1,4), range(1,4)):
+                self.assertNotIn(air, self.wfc.state_space[x][0][y])
+
+    
+    def test_collapses_3x3_diagonal_corners(self):
+        self.wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell([3,0,3], StructureRotation(brickhouse_entrance, 2))
+
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 50)
+
+        self._assert_centered_3x3_building()
+
+        print("WFC collapsed after", retries, "retries")
+        print_state(self.wfc)
+
+    def test_collapses_3x3_corner_and_middle_wall(self):
+        self.wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell([2,0,3], StructureRotation(brickhouse_middle, 2))
+
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 50)
+
+        self._assert_centered_3x3_building()
+
+        print("WFC collapsed after", retries, "retries")
+        print_state(self.wfc)

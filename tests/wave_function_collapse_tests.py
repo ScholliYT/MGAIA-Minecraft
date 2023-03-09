@@ -136,3 +136,16 @@ class WaveFunctionCollaplse10x1x10Test(unittest.TestCase):
         print("WFC collapsed after", retries, "retries")
         print_state(self.wfc)
 
+class WaveFunctionCollaplse3x2x3Test(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.wfc = WaveFunctionCollapse((3,2,3), structure_adjecencies)
+        return super().setUp()
+
+    def test_collapses(self):
+        retries = self.wfc.collapse_with_retry()
+        self.assertLessEqual(retries, 100)
+
+        print("WFC collapsed after", retries, "retries")
+        print_state(self.wfc)
+
