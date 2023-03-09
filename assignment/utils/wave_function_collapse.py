@@ -21,6 +21,11 @@ class WaveFunctionCollapse:
             StructureRotation(s_name, rotation) 
             for s_name, rotation in itertools.product(structure_adjecencies.keys(), range(4)))
 
+        # TODO: Infer this from the definition of structures
+        for i in [0,1,2,3]:
+            self.superposition.remove(StructureRotation("empty-space-air", i))
+        self.superposition.add(StructureRotation("empty-space-air", 0, rotation_invariant=True))
+
         self._initialize_state_space()
     
     def _cell_coordinates(self):
@@ -73,7 +78,13 @@ class WaveFunctionCollapse:
                 yield (x,y,z)
 
     def collapse_cell(self, cell_xyz: Tuple[int,int,int], colappsed_structure: StructureRotation):
-        return self.propagate(cell_xyz, set([colappsed_structure]))
+        self.propagate(cell_xyz, set([colappsed_structure]))
+
+
+        # assert that collapse happend
+        x,y,z = cell_xyz
+        assert self.state_space[x][y][z] == set([colappsed_structure])
+        
 
     def propagate(self, cell_xyz: Tuple[int,int,int], remaining_states: Set[StructureRotation]):
         x,y,z = cell_xyz
