@@ -1,42 +1,24 @@
 import itertools
 import unittest
 
-from assignment.utils.structure_adjacency import StructureRotation, structure_adjecencies, all_rotations
+from assignment.utils.structure_adjacency import (
+    StructureRotation,
+    structure_adjecencies,
+)
 from assignment.utils.structures import (
-    brickhouse_balcony,
-    brickhouse_big_window_flat_roof,
-    brickhouse_center,
-    brickhouse_corner,
-    brickhouse_courtyard,
     brickhouse_entrance,
     brickhouse_middle,
-    brickhouse_roofhouse_corner,
-    brickhouse_roofhouse_courtyard,
-    brickhouse_roofhouse_middle,
-    brickhouse_small_window_flat_roof,
     empty_space_air,
+)
+from assignment.utils.wave_function_collaplse_util import (
+    collapse_to_air_on_outer_rectangle,
+    print_state,
 )
 from assignment.utils.wave_function_collapse import WaveFunctionCollapse
 
 empty_space_air_structure = StructureRotation(empty_space_air, 0)
 all_air_structures = set([StructureRotation(empty_space_air, r) for r in range(4)])
 
-def print_state(wfc: WaveFunctionCollapse):
-    for y in range(wfc.state_space_size[1]):
-        print("Layer y="+str(y))
-        for x in reversed(range(wfc.state_space_size[0])):
-            print(wfc.state_space[x][y])
-
-def collapse_to_air_on_outer_rectangle(wfc: WaveFunctionCollapse):
-        for x in range(wfc.state_space_size[0]):
-            last = wfc.state_space_size[2]-1
-            wfc.collapse_cell([x,0,0], StructureRotation(empty_space_air, 0))
-            wfc.collapse_cell([x,0,last], StructureRotation(empty_space_air, 0))
-
-        for z in range(wfc.state_space_size[2]):
-            last = wfc.state_space_size[0]-1
-            wfc.collapse_cell([0,0,z], StructureRotation(empty_space_air, 0))
-            wfc.collapse_cell([last,0,z], StructureRotation(empty_space_air, 0))
 
 
 class WaveFunctionCollaplse2x1x1_Air_Test(unittest.TestCase):

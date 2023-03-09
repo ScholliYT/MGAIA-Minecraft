@@ -2,27 +2,12 @@ import unittest
 
 from assignment.utils.structure_adjacency import StructureRotation, structure_adjecencies
 from assignment.utils.structures import (
-    brickhouse_balcony,
-    brickhouse_big_window_flat_roof,
     brickhouse_center,
-    brickhouse_corner,
-    brickhouse_courtyard,
     brickhouse_entrance,
-    brickhouse_middle,
-    brickhouse_roofhouse_corner,
-    brickhouse_roofhouse_courtyard,
-    brickhouse_roofhouse_middle,
-    brickhouse_small_window_flat_roof,
-    empty_space_air,
 )
+from assignment.utils.wave_function_collaplse_util import print_state
 from assignment.utils.wave_function_collapse import WaveFunctionCollapse
 
-
-def print_state(wfc: WaveFunctionCollapse):
-    for y in range(wfc.state_space_size[1]):
-        print("Layer y="+str(y))
-        for x in reversed(range(wfc.state_space_size[0])):
-            print(wfc.state_space[x][y])
 
 class WaveFunctionCollaplse1x1x1Test(unittest.TestCase):
 
