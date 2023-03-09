@@ -19,7 +19,7 @@ def build_strucutre_showcase(editor: Editor, structures: List[Structure], space_
 
     geo.placeCuboid(editor, 
                     ivec3(0,0,0), 
-                    ivec3(4*(strucutre_size.x+2*space_between_structures), 25, len(structures)*(strucutre_size.z+space_between_structures)),
+                    ivec3(4*(strucutre_size.x+2*space_between_structures), 16, len(structures)*(strucutre_size.z+space_between_structures)),
                     Block("air"))
     
     editor.flushBuffer()
@@ -44,11 +44,13 @@ def main():
             load_structure("brickhouse-middle"),
             load_structure("brickhouse-balcony"),
             load_structure("brickhouse-corner"),
+            load_structure("brickhouse-courtyard"),
+            load_structure("brickhouse-roofhouse-corner"),
+            load_structure("brickhouse-roofhouse-middle"),
+            load_structure("brickhouse-roofhouse-courtyard"),
             load_structure("brickhouse-center"),
             load_structure("brickhouse-small-window-flat-roof"),
             load_structure("brickhouse-big-window-flat-roof"),
-            load_structure("brickhouse-roofhouse-corner"),
-            load_structure("brickhouse-roofhouse-middle"),
         ]
 
         print("Building structure showcase")

@@ -17,6 +17,13 @@ def build_brickhouse(editor: Editor):
     balcony_structure = load_structure("brickhouse-balcony")
     corner_structure = load_structure("brickhouse-corner")
 
+    brickhouse_courtyard = load_structure("brickhouse-courtyard")
+
+    brickhouse_roofhouse_corner = load_structure("brickhouse-roofhouse-corner")
+    brickhouse_roofhouse_middle = load_structure("brickhouse-roofhouse-middle")
+    brickhouse_roofhouse_courtyard = load_structure("brickhouse-roofhouse-courtyard")
+
+
     
     # same for all strucures
     strucutre_size = entrance_structure.size
@@ -29,14 +36,29 @@ def build_brickhouse(editor: Editor):
     #     [(entrance_structure, 0), (entrance_structure, 3)],
     # ]
 
-    building: List[List[Tuple[Structure, int]]] = [
-        [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
-        [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
-    ]
+    # building: List[List[Tuple[Structure, int]]] = [
+    #     [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
+    #     [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
+    # ]
 
     # building: List[List[Tuple[Structure, int]]] = [
     #     [(entrance_structure, 1), (middle_structure, 1), (balcony_structure, 2)],
     #     [(entrance_structure, 0), (middle_structure, 3), (corner_structure, 3)],
+    # ]
+
+
+    # 3x1x2 ground floor
+    building: List[List[Tuple[Structure, int]]] = [
+        [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
+        [(middle_structure, 0), (brickhouse_courtyard, 0),  (middle_structure, 2)],
+        [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
+    ]
+
+    # 3x1x2 roof
+    # building: List[List[Tuple[Structure, int]]] = [
+    #     [(brickhouse_roofhouse_corner, 1), (brickhouse_roofhouse_middle, 1), (brickhouse_roofhouse_corner, 2)],
+    #     [(brickhouse_roofhouse_middle, 0), (brickhouse_roofhouse_courtyard, 0),  (brickhouse_roofhouse_middle, 2)],
+    #     [(brickhouse_roofhouse_corner, 0), (brickhouse_roofhouse_middle, 3), (brickhouse_roofhouse_corner, 3)],
     # ]
 
 
@@ -67,7 +89,7 @@ def main():
         #     ED.flushBuffer()
 
 
-        ED.transform @= Transform(translation=ivec3(-210, -1, 250))
+        ED.transform @= Transform(translation=ivec3(-160, -1, 250))
 
         print("Building house")
         build_brickhouse(editor=ED)
