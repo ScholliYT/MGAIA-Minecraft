@@ -1,6 +1,20 @@
 import unittest
 
 from assignment.utils.structure_adjacency import StructureRotation, structure_adjecencies
+from assignment.utils.structures import (
+    brickhouse_balcony,
+    brickhouse_big_window_flat_roof,
+    brickhouse_center,
+    brickhouse_corner,
+    brickhouse_courtyard,
+    brickhouse_entrance,
+    brickhouse_middle,
+    brickhouse_roofhouse_corner,
+    brickhouse_roofhouse_courtyard,
+    brickhouse_roofhouse_middle,
+    brickhouse_small_window_flat_roof,
+    empty_space_air,
+)
 from assignment.utils.wave_function_collapse import WaveFunctionCollapse
 
 
@@ -36,19 +50,19 @@ class WaveFunctionCollaplse2x1x2Test(unittest.TestCase):
         self.assertFalse(self.wfc.collapsed())
 
     def test_converges_on_first_collapse(self):
-        self.wfc.collapse_cell((0,0,0), StructureRotation("brickhouse-entrance", 0))
-        self.assertIn(StructureRotation("brickhouse-entrance", 0), self.wfc.state_space[0][0][0])
-        self.assertIn(StructureRotation("brickhouse-entrance", 3), self.wfc.state_space[0][0][1])
-        self.assertIn(StructureRotation("brickhouse-entrance", 1), self.wfc.state_space[1][0][0])
-        self.assertIn(StructureRotation("brickhouse-entrance", 2), self.wfc.state_space[1][0][1])
+        self.wfc.collapse_cell((0,0,0), StructureRotation(brickhouse_entrance, 0))
+        self.assertIn(StructureRotation(brickhouse_entrance, 0), self.wfc.state_space[0][0][0])
+        self.assertIn(StructureRotation(brickhouse_entrance, 3), self.wfc.state_space[0][0][1])
+        self.assertIn(StructureRotation(brickhouse_entrance, 1), self.wfc.state_space[1][0][0])
+        self.assertIn(StructureRotation(brickhouse_entrance, 2), self.wfc.state_space[1][0][1])
 
     def test_converges_after_two_cell_collapses(self):
-        self.wfc.collapse_cell((0,0,0), StructureRotation("brickhouse-entrance", 0))
-        self.wfc.collapse_cell((1,0,1), StructureRotation("brickhouse-entrance", 2))
-        self.assertIn(StructureRotation("brickhouse-entrance", 0), self.wfc.state_space[0][0][0])
-        self.assertIn(StructureRotation("brickhouse-entrance", 3), self.wfc.state_space[0][0][1])
-        self.assertIn(StructureRotation("brickhouse-entrance", 1), self.wfc.state_space[1][0][0])
-        self.assertIn(StructureRotation("brickhouse-entrance", 2), self.wfc.state_space[1][0][1])
+        self.wfc.collapse_cell((0,0,0), StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell((1,0,1), StructureRotation(brickhouse_entrance, 2))
+        self.assertIn(StructureRotation(brickhouse_entrance, 0), self.wfc.state_space[0][0][0])
+        self.assertIn(StructureRotation(brickhouse_entrance, 3), self.wfc.state_space[0][0][1])
+        self.assertIn(StructureRotation(brickhouse_entrance, 1), self.wfc.state_space[1][0][0])
+        self.assertIn(StructureRotation(brickhouse_entrance, 2), self.wfc.state_space[1][0][1])
     
     
     def test_collapses(self):
@@ -70,10 +84,7 @@ class WaveFunctionCollaplse4x1x2Test(unittest.TestCase):
         self.assertLessEqual(retries, 20)
 
         print("WFC collapsed after", retries, "retries")
-        for y in range(self.wfc.state_space_size[1]):
-            print("Layer y="+str(y))
-            for x in reversed(range(self.wfc.state_space_size[0])):
-                print(self.wfc.state_space[x][y])
+        print_state(self.wfc)
 
 
 class WaveFunctionCollaplse2x2x2Test(unittest.TestCase):
@@ -97,9 +108,9 @@ class WaveFunctionCollaplse3x1x3Test(unittest.TestCase):
     
     def test_uses_center_tile(self):
         
-        self.wfc.collapse_cell([0,0,0], StructureRotation("brickhouse-entrance", 0))
+        self.wfc.collapse_cell([0,0,0], StructureRotation(brickhouse_entrance, 0))
 
-        possible_picks = [(StructureRotation("brickhouse-center", r) in self.wfc.state_space[1][0][1]) for r in range(4)]
+        possible_picks = [(StructureRotation(brickhouse_center, r) in self.wfc.state_space[1][0][1]) for r in range(4)]
 
         self.assertTrue(all(possible_picks))
 
@@ -109,10 +120,7 @@ class WaveFunctionCollaplse3x1x3Test(unittest.TestCase):
         self.assertLessEqual(retries, 50)
 
         print("WFC collapsed after", retries, "retries")
-        for y in range(self.wfc.state_space_size[1]):
-            print("Layer y="+str(y))
-            for x in reversed(range(self.wfc.state_space_size[0])):
-                print(self.wfc.state_space[x][y])
+        print_state(self.wfc)
 
 
 class WaveFunctionCollaplse10x1x10Test(unittest.TestCase):
@@ -126,8 +134,5 @@ class WaveFunctionCollaplse10x1x10Test(unittest.TestCase):
         self.assertLessEqual(retries, 100)
 
         print("WFC collapsed after", retries, "retries")
-        for y in range(self.wfc.state_space_size[1]):
-            print("Layer y="+str(y))
-            for x in reversed(range(self.wfc.state_space_size[0])):
-                print(self.wfc.state_space[x][y])
+        print_state(self.wfc)
 

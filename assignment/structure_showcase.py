@@ -1,15 +1,23 @@
-from typing import List, Tuple
+from typing import List
 
-
+from gdpc import Block, Editor, Transform
 from gdpc import geometry as geo
-from gdpc import Editor, Transform, Block
 from glm import ivec3
 
-from assignment.utils.structure import Structure, load_structure, build_structure
-
-
-# === STRUCTURE
-
+from assignment.utils.structure import Structure, build_structure, load_structure
+from assignment.utils.structures import (
+    brickhouse_balcony,
+    brickhouse_big_window_flat_roof,
+    brickhouse_center,
+    brickhouse_corner,
+    brickhouse_courtyard,
+    brickhouse_entrance,
+    brickhouse_middle,
+    brickhouse_roofhouse_corner,
+    brickhouse_roofhouse_courtyard,
+    brickhouse_roofhouse_middle,
+    brickhouse_small_window_flat_roof,
+)
 
 
 def build_strucutre_showcase(editor: Editor, structures: List[Structure], space_between_structures = 3):
@@ -40,17 +48,17 @@ def main():
         ED.transform @= Transform(translation=ivec3(0, 0, 100))
 
         structures = [
-            load_structure("brickhouse-entrance"),
-            load_structure("brickhouse-middle"),
-            load_structure("brickhouse-balcony"),
-            load_structure("brickhouse-corner"),
-            load_structure("brickhouse-courtyard"),
-            load_structure("brickhouse-roofhouse-corner"),
-            load_structure("brickhouse-roofhouse-middle"),
-            load_structure("brickhouse-roofhouse-courtyard"),
-            load_structure("brickhouse-center"),
-            load_structure("brickhouse-small-window-flat-roof"),
-            load_structure("brickhouse-big-window-flat-roof"),
+            load_structure(brickhouse_entrance),
+            load_structure(brickhouse_middle),
+            load_structure(brickhouse_balcony),
+            load_structure(brickhouse_corner),
+            load_structure(brickhouse_courtyard),
+            load_structure(brickhouse_roofhouse_corner),
+            load_structure(brickhouse_roofhouse_middle),
+            load_structure(brickhouse_roofhouse_courtyard),
+            load_structure(brickhouse_center),
+            load_structure(brickhouse_small_window_flat_roof),
+            load_structure(brickhouse_big_window_flat_roof),
         ]
 
         print("Building structure showcase")

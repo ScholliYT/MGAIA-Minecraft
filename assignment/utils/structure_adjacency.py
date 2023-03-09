@@ -2,6 +2,19 @@ import logging
 from dataclasses import dataclass, field, replace
 from typing import Dict, List
 
+from assignment.utils.structures import (
+    brickhouse_balcony,
+    brickhouse_big_window_flat_roof,
+    brickhouse_center,
+    brickhouse_corner,
+    brickhouse_entrance,
+    brickhouse_middle,
+    brickhouse_roofhouse_corner,
+    brickhouse_roofhouse_middle,
+    brickhouse_small_window_flat_roof,
+    empty_space_air,
+)
+
 logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
@@ -65,21 +78,7 @@ class StructureAdjacency:
             raise ValueError("Rotation must be 0,1,2 or 3")
 
 
-# air
-empty_space_air = "empty-space-air"
 
-# ground floors
-brickhouse_entrance = "brickhouse-entrance"
-brickhouse_middle = "brickhouse-middle"
-# brickhouse_balcony = "brickhouse-balcony"
-# brickhouse_corner = "brickhouse-corner"
-brickhouse_center = "brickhouse-center"
-
-# roofs
-# brickhouse_small_window_flat_roof = "brickhouse-small-window-flat-roof"
-# brickhouse_big_window_flat_roof = "brickhouse-big-window-flat-roof"
-brickhouse_roofhouse_corner = "brickhouse-roofhouse-corner"
-brickhouse_roofhouse_middle = "brickhouse-roofhouse-middle"
 
 def all_rotations(structure: str):
     return [StructureRotation(structure, r) for r in range(4)]

@@ -1,30 +1,37 @@
 from typing import List, Tuple
 
-
 from gdpc import Editor, Transform
 from glm import ivec3
 
-from assignment.utils.structure import Structure, load_structure, build_structure
-
-
-# === STRUCTURE
-
+from assignment.utils.structure import Structure, build_structure, load_structure
+from assignment.utils.structures import (
+    brickhouse_balcony,
+    brickhouse_big_window_flat_roof,
+    brickhouse_center,
+    brickhouse_corner,
+    brickhouse_courtyard,
+    brickhouse_entrance,
+    brickhouse_middle,
+    brickhouse_roofhouse_corner,
+    brickhouse_roofhouse_courtyard,
+    brickhouse_roofhouse_middle,
+    brickhouse_small_window_flat_roof,
+)
 
 
 def build_brickhouse(editor: Editor):
-    entrance_structure = load_structure("brickhouse-entrance")
-    middle_structure = load_structure("brickhouse-middle")
-    balcony_structure = load_structure("brickhouse-balcony")
-    corner_structure = load_structure("brickhouse-corner")
+    entrance_structure = load_structure(brickhouse_entrance)
+    middle_structure = load_structure(brickhouse_middle)
+    balcony_structure = load_structure(brickhouse_balcony)
+    corner_structure = load_structure(brickhouse_corner)
+    center_structure = load_structure(brickhouse_center)
+    courtyard_structure = load_structure(brickhouse_courtyard)
+    small_window_flat_roof_structure = load_structure(brickhouse_small_window_flat_roof)
+    big_window_flat_roof_structure = load_structure(brickhouse_big_window_flat_roof)
+    roofhouse_corner_structure = load_structure(brickhouse_roofhouse_corner)
+    roofhouse_middle_structure = load_structure(brickhouse_roofhouse_middle)
+    roofhouse_courtyard_structure = load_structure(brickhouse_roofhouse_courtyard)
 
-    brickhouse_courtyard = load_structure("brickhouse-courtyard")
-
-    brickhouse_roofhouse_corner = load_structure("brickhouse-roofhouse-corner")
-    brickhouse_roofhouse_middle = load_structure("brickhouse-roofhouse-middle")
-    brickhouse_roofhouse_courtyard = load_structure("brickhouse-roofhouse-courtyard")
-
-
-    
     # same for all strucures
     strucutre_size = entrance_structure.size
 
@@ -50,7 +57,7 @@ def build_brickhouse(editor: Editor):
     # 3x1x2 ground floor
     building: List[List[Tuple[Structure, int]]] = [
         [(entrance_structure, 1), (middle_structure, 1), (entrance_structure, 2)],
-        [(middle_structure, 0), (brickhouse_courtyard, 0),  (middle_structure, 2)],
+        [(middle_structure, 0), (courtyard_structure, 0),  (middle_structure, 2)],
         [(entrance_structure, 0), (middle_structure, 3), (entrance_structure, 3)],
     ]
 
