@@ -3,7 +3,7 @@
 
 import itertools
 import random
-from typing import Dict, List, Set, Tuple
+from typing import Callable, Dict, Set, Tuple, Union
 
 from assignment.utils.structure_adjacency import StructureAdjacency, StructureRotation
 
@@ -20,11 +20,6 @@ class WaveFunctionCollapse:
         self.superposition = set(
             StructureRotation(s_name, rotation) 
             for s_name, rotation in itertools.product(structure_adjecencies.keys(), range(4)))
-
-        # TODO: Infer this from the definition of structures
-        for i in [0,1,2,3]:
-            self.superposition.remove(StructureRotation("empty-space-air", i))
-        self.superposition.add(StructureRotation("empty-space-air", 0, rotation_invariant=True))
 
         self._initialize_state_space()
     
@@ -83,7 +78,8 @@ class WaveFunctionCollapse:
 
         # assert that collapse happend
         x,y,z = cell_xyz
-        assert self.state_space[x][y][z] == set([colappsed_structure])
+        assert self.state_space[x][y][z] in (set(), set([colappsed_structure])), \
+            f"This cell should have been set to {colappsed_structure} or {set()} but is {self.state_space[x][y][z]}"
         
 
     def propagate(self, cell_xyz: Tuple[int,int,int], remaining_states: Set[StructureRotation]):
@@ -154,11 +150,14 @@ class WaveFunctionCollapse:
         
         return True
     
-    def collapse_with_retry(self, max_retry=1000) -> int:
+    def collapse_with_retry(self, max_retry=1000, reinit: Union[None, Callable]=None) -> int:
         retry_counter = 0
 
         while not self.collapse():
             self._initialize_state_space()
+            if reinit:
+                reinit()
+
             retry_counter += 1
 
             if retry_counter > max_retry:

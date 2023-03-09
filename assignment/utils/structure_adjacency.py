@@ -1,9 +1,6 @@
-from typing import Dict, List, Tuple
-
-
-from dataclasses import dataclass, field, replace
-
 import logging
+from dataclasses import dataclass, field, replace
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -11,11 +8,8 @@ logger = logging.getLogger(__name__)
 class StructureRotation:
     structure_name: str
     rotation: int
-    rotation_invariant: bool = False
 
     def rotate(self, amount: int):
-        if self.rotation_invariant:
-            return replace(self) # return copy of self with no changes
         return replace(self, rotation=(self.rotation + amount) % 4)
         
 
@@ -32,11 +26,11 @@ class StructureAdjacency:
     y_plus: List[StructureRotation] = field(default_factory=list)
     y_minus: List[StructureRotation] = field(default_factory=list)
 
-    x_plus: List[StructureRotation] = field(default_factory=lambda: [empty_space_air_structure])
-    x_minus: List[StructureRotation] = field(default_factory=lambda: [empty_space_air_structure])
+    x_plus: List[StructureRotation] = field(default_factory=lambda: all_rotations(empty_space_air))
+    x_minus: List[StructureRotation] = field(default_factory=lambda: all_rotations(empty_space_air))
 
-    z_plus: List[StructureRotation] = field(default_factory=lambda: [empty_space_air_structure])
-    z_minus: List[StructureRotation] = field(default_factory=lambda: [empty_space_air_structure])
+    z_plus: List[StructureRotation] = field(default_factory=lambda: all_rotations(empty_space_air))
+    z_minus: List[StructureRotation] = field(default_factory=lambda: all_rotations(empty_space_air))
 
 
     def adjecent_structrues(self, axis:str, self_rotation: int) -> List[StructureRotation]:
@@ -73,7 +67,6 @@ class StructureAdjacency:
 
 # air
 empty_space_air = "empty-space-air"
-empty_space_air_structure = StructureRotation(empty_space_air, rotation=0, rotation_invariant=True)
 
 # ground floors
 brickhouse_entrance = "brickhouse-entrance"
@@ -91,76 +84,86 @@ brickhouse_roofhouse_middle = "brickhouse-roofhouse-middle"
 def all_rotations(structure: str):
     return [StructureRotation(structure, r) for r in range(4)]
 
-
 structure_adjecencies = {
     empty_space_air: StructureAdjacency(
         structure_name=empty_space_air,
         x_plus=[
-            empty_space_air_structure,
-            StructureRotation(brickhouse_entrance, 0),
+            *all_rotations(empty_space_air),
+            StructureRotation(brickhouse_entrance, 1).rotate(3), # from brickhouse_entrance.x_minus
+            StructureRotation(brickhouse_entrance, 1).rotate(2), # from brickhouse_entrance.z_minus
+        ],
+        x_minus=[
+            *all_rotations(empty_space_air),
+            StructureRotation(brickhouse_entrance, 3).rotate(3), # from brickhouse_entrance.x_minus
+            StructureRotation(brickhouse_entrance, 3).rotate(2), # from brickhouse_entrance.z_minus
         ],
         z_plus=[
-            empty_space_air_structure,
-            StructureRotation(brickhouse_entrance, 0),
-            # StructureRotation(brickhouse_middle, 0),
-        ]
+            *all_rotations(empty_space_air),
+            StructureRotation(brickhouse_entrance, 2).rotate(3), # from brickhouse_entrance.x_minus
+            StructureRotation(brickhouse_entrance, 2).rotate(2), # from brickhouse_entrance.z_minus
+        ],
+        z_minus=[
+            *all_rotations(empty_space_air),
+            StructureRotation(brickhouse_entrance, 0).rotate(3), # from brickhouse_entrance.x_minus
+            StructureRotation(brickhouse_entrance, 0).rotate(2), # from brickhouse_entrance.z_minus
+        ],
     ),
     brickhouse_entrance: StructureAdjacency(
         structure_name=brickhouse_entrance,
         x_plus=[
-            # StructureRotation(brickhouse_middle, 0),
-            # StructureRotation(brickhouse_entrance, 1),
+            StructureRotation(brickhouse_middle, 0),
+            StructureRotation(brickhouse_entrance, 1),
         ],
         z_plus=[
-            # StructureRotation(brickhouse_entrance, 3),
-            # StructureRotation(brickhouse_middle, 3),
+            StructureRotation(brickhouse_entrance, 3),
+            StructureRotation(brickhouse_middle, 3),
         ],
         # y_plus=[
         #     # StructureRotation(brickhouse_small_window_flat_roof, 0),
         #     StructureRotation(brickhouse_roofhouse_corner, 0),
         # ]
     ), 
-    # brickhouse_middle: StructureAdjacency(
-    #     structure_name=brickhouse_middle,
-    #     x_plus=[
-    #         StructureRotation(brickhouse_middle, 0),
-    #         StructureRotation(brickhouse_entrance, 1),
-    #     ],
-    #     x_minus=[
-    #         StructureRotation(brickhouse_entrance, 0),
-    #         StructureRotation(brickhouse_middle, 0),
-    #     ],
-    #     z_plus=[
-    #         StructureRotation(brickhouse_middle, 2),
-    #         # *all_rotations(brickhouse_center),
-    #     ],
-    #     # y_plus=[
-    #     #     StructureRotation(brickhouse_roofhouse_middle, 0),
-    #     # ]
-    # ),
-    # brickhouse_center: StructureAdjacency(
-    #     structure_name=brickhouse_center,
-    #     x_plus=[
-    #         *all_rotations(brickhouse_center),
-    #         StructureRotation(brickhouse_middle, 1),
-    #     ],
-    #     x_minus=[
-    #         *all_rotations(brickhouse_center),
-    #         StructureRotation(brickhouse_middle, 3),
-    #     ],
-    #     z_plus=[
-    #         *all_rotations(brickhouse_center),
-    #         StructureRotation(brickhouse_middle, 2),
-    #     ],
-    #     z_minus=[
-    #         *all_rotations(brickhouse_center),
-    #         StructureRotation(brickhouse_middle, 0),
-    #     ],
-    #     # y_plus=[
-    #     #     # TODO:
-    #     #     #StructureRotation(brickhouse_roofhouse_middle, 0),
-    #     # ]
-    # ),
+    brickhouse_middle: StructureAdjacency(
+        structure_name=brickhouse_middle,
+        x_plus=[
+            StructureRotation(brickhouse_middle, 0),
+            StructureRotation(brickhouse_entrance, 1),
+        ],
+        x_minus=[
+            StructureRotation(brickhouse_entrance, 0),
+            StructureRotation(brickhouse_middle, 0),
+        ],
+        z_plus=[
+            StructureRotation(brickhouse_middle, 2),
+            *all_rotations(brickhouse_center),
+        ],
+        # y_plus=[
+        #     StructureRotation(brickhouse_roofhouse_middle, 0),
+        # ]
+    ),
+    brickhouse_center: StructureAdjacency(
+        structure_name=brickhouse_center,
+        x_plus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 1),
+        ],
+        x_minus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 3),
+        ],
+        z_plus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 2),
+        ],
+        z_minus=[
+            *all_rotations(brickhouse_center),
+            StructureRotation(brickhouse_middle, 0),
+        ],
+        # y_plus=[
+        #     # TODO:
+        #     #StructureRotation(brickhouse_roofhouse_middle, 0),
+        # ]
+    ),
     # brickhouse_roofhouse_corner: StructureAdjacency(
     #     structure_name=brickhouse_roofhouse_corner,
     #     x_plus=[
