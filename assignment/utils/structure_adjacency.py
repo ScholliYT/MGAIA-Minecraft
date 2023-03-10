@@ -343,9 +343,11 @@ structure_adjecencies = {
     brickhouse_small_window_flat_roof: StructureAdjacency(
         structure_name=brickhouse_small_window_flat_roof,
         x_plus=[
+            StructureRotation(brickhouse_big_window_flat_roof, 1),
             StructureRotation(brickhouse_small_window_flat_roof, 1),
         ],
         z_plus=[
+            StructureRotation(brickhouse_big_window_flat_roof, 3),
             StructureRotation(brickhouse_small_window_flat_roof, 3),
         ],
         y_minus=[
@@ -357,9 +359,11 @@ structure_adjecencies = {
         structure_name=brickhouse_big_window_flat_roof,
         x_plus=[
             StructureRotation(brickhouse_big_window_flat_roof, 1),
+            StructureRotation(brickhouse_small_window_flat_roof, 1),
         ],
         z_plus=[
             StructureRotation(brickhouse_big_window_flat_roof, 3),
+            StructureRotation(brickhouse_small_window_flat_roof, 3),
         ],
         y_minus=[
             StructureRotation(brickhouse_corner, 0),
