@@ -1,11 +1,10 @@
 import pickle
-from typing import Dict, Tuple
-from glm import ivec3
-from gdpc import Block
-from gdpc import Editor, Transform
-
-
 from dataclasses import dataclass
+from functools import lru_cache
+from typing import Dict, Tuple
+
+from gdpc import Block, Editor, Transform
+from glm import ivec3
 
 
 @dataclass
@@ -16,7 +15,7 @@ class Structure:
     blocks: Dict[Tuple[int, int, int], Block]
 
 
-
+@lru_cache
 def load_structure(structure_name: str, structures_directory: str = "structures") -> Structure:
     filename = structures_directory + "/" + structure_name + ".pkl"
     print("Loading strucutre data from disk", filename)
