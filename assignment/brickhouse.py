@@ -31,7 +31,6 @@ from assignment.utils.structures import (
 from assignment.utils.wave_function_collaplse_util import collapse_to_air_on_outer_rectangle
 from assignment.utils.wave_function_collapse import WaveFunctionCollapse
 
-logger = logging.getLogger(__name__)
 
 def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
     entrance_structure = load_structure(brickhouse_entrance)
@@ -115,30 +114,28 @@ def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
 
 def random_building() -> List[List[List[Tuple[Structure, int]]]]:
 
-    wfc = WaveFunctionCollapse((10,2,10), structure_adjecencies)
-    collapse_to_air_on_outer_rectangle(wfc)
+    wfc = WaveFunctionCollapse((7,2,7), structure_adjecencies)
+
+    def reinit():
+        collapse_to_air_on_outer_rectangle(wfc)
+
+        # wfc.collapse_cell([0,0,0], StructureRotation(empty_space_air, 0))
+        # wfc.collapse_cell([3,0,3], StructureRotation(empty_space_air, 0))
 
 
-    # wfc.collapse_cell([0,0,0], StructureRotation(empty_space_air, 0))
-    # wfc.collapse_cell([3,0,3], StructureRotation(empty_space_air, 0))
+        # wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
+        # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_entrance, 3))
+        # wfc.collapse_cell([1,0,3], StructureRotation(brickhouse_middle, 3))
+        # wfc.collapse_cell([1,0,4], StructureRotation(brickhouse_middle, 3))
+        # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_middle, 3))
+
+        # wfc.collapse_cell([6,0,5], StructureRotation(brickhouse_courtyard, 0))
+
+        # wfc.collapse_cell([6,0,6], StructureRotation(brickhouse_entrance, 2))
 
 
-    wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
-    # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_entrance, 3))
-    # wfc.collapse_cell([1,0,3], StructureRotation(brickhouse_middle, 3))
-    # wfc.collapse_cell([1,0,4], StructureRotation(brickhouse_middle, 3))
-    # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_middle, 3))
-
-    wfc.collapse_cell([6,0,5], StructureRotation(brickhouse_courtyard, 0))
-
-
-
-
-    # wfc.collapse_cell([6,0,6], StructureRotation(brickhouse_entrance, 2))
-
-
-
-    logger.info("WFC collapsed after %d retries", wfc.collapse_with_retry())
+    retries = wfc.collapse_with_retry(reinit=reinit)
+    print(f"WFC collapsed after {retries} retries")
 
     # transform StructuredRotation to (Structure,rotation) tuple
     buidling = [[[

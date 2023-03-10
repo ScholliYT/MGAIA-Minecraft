@@ -153,6 +153,10 @@ class WaveFunctionCollapse:
     def collapse_with_retry(self, max_retry=1000, reinit: Union[None, Callable]=None) -> int:
         retry_counter = 0
 
+        # call reinit initially once
+        if reinit:
+                reinit()
+
         while not self.collapse():
             self._initialize_state_space()
             if reinit:
