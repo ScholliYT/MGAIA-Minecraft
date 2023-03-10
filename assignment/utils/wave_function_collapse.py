@@ -3,7 +3,7 @@
 
 import itertools
 import random
-from typing import Callable, Dict, Set, Tuple, Union
+from typing import Callable, Dict, List, Set, Tuple, Union
 
 from assignment.utils.structure_adjacency import StructureAdjacency, StructureRotation
 
@@ -85,7 +85,7 @@ class WaveFunctionCollapse:
     def propagate(self, cell_xyz: Tuple[int,int,int], remaining_states: Set[StructureRotation]):
         x,y,z = cell_xyz
         if not remaining_states.issubset(self.state_space[x][y][z]):
-            raise Exception(f"Tried to colappse a state to values that are not available in current superposition: {remaining_states}")
+            raise Exception(f"[{x},{y},{z}] Tried to colappse a state to values that are not available in current superposition: {remaining_states} ⊄ {self.state_space[x][y][z]}")
         elif remaining_states == self.state_space[x][y][z]:
             # there is no change and nothing needs to be propagated further
             return
@@ -164,12 +164,16 @@ class WaveFunctionCollapse:
                 raise Exception(f"WFC did not collapse after {max_retry} retries.")
         
         return retry_counter
+    
 
-            
+    def collapsed_state(self) -> List[List[List[StructureRotation]]]:
 
-        
+        if not self.collapsed():
+            raise Exception("The WFC is not collapsed. Therefore the state can't be extracted.")
 
-        
-
-
-
+        # get the single element of each set
+        ret = [[[list(self.state_space[x][y][z])[0]
+             for z in range(self.state_space_size[2])] 
+             for y in range(self.state_space_size[1])] 
+             for x in range(self.state_space_size[0])]
+        return ret
