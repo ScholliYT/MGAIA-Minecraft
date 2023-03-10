@@ -114,7 +114,7 @@ def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
 
 def random_building() -> List[List[List[Tuple[Structure, int]]]]:
 
-    wfc = WaveFunctionCollapse((7,2,7), structure_adjecencies)
+    wfc = WaveFunctionCollapse((9,2,9), structure_adjecencies)
 
     def reinit():
         collapse_to_air_on_outer_rectangle(wfc)
@@ -128,6 +128,9 @@ def random_building() -> List[List[List[Tuple[Structure, int]]]]:
         # wfc.collapse_cell([1,0,3], StructureRotation(brickhouse_middle, 3))
         # wfc.collapse_cell([1,0,4], StructureRotation(brickhouse_middle, 3))
         # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_middle, 3))
+
+
+        wfc.collapse_cell([5,0,5], StructureRotation(brickhouse_inner_corner_m2m, 0))
 
         # wfc.collapse_cell([6,0,5], StructureRotation(brickhouse_courtyard, 0))
 
