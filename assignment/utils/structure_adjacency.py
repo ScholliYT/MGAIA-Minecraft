@@ -253,19 +253,31 @@ structure_adjecencies = {
         structure_name=brickhouse_center,
         x_plus=[
             *all_rotations(brickhouse_center),
+            *all_rotations(brickhouse_courtyard),
             StructureRotation(brickhouse_middle, 1),
+            StructureRotation(brickhouse_inner_corner_m2m, 3),
+            StructureRotation(brickhouse_inner_corner_m2m, 2),
         ],
         x_minus=[
             *all_rotations(brickhouse_center),
+            *all_rotations(brickhouse_courtyard),
             StructureRotation(brickhouse_middle, 3),
+            StructureRotation(brickhouse_inner_corner_m2m, 1),
+            StructureRotation(brickhouse_inner_corner_m2m, 0),
         ],
         z_plus=[
             *all_rotations(brickhouse_center),
+            *all_rotations(brickhouse_courtyard),
             StructureRotation(brickhouse_middle, 2),
+            StructureRotation(brickhouse_inner_corner_m2m, 0),
+            StructureRotation(brickhouse_inner_corner_m2m, 3),
         ],
         z_minus=[
             *all_rotations(brickhouse_center),
+            *all_rotations(brickhouse_courtyard),
             StructureRotation(brickhouse_middle, 0),
+            StructureRotation(brickhouse_inner_corner_m2m, 2),
+            StructureRotation(brickhouse_inner_corner_m2m, 1),
         ],
         y_plus=[
             *all_rotations(brickhouse_roofhouse_center)
@@ -275,15 +287,19 @@ structure_adjecencies = {
         structure_name=brickhouse_courtyard,
         x_plus=[
             StructureRotation(brickhouse_middle, 1),
+            *all_rotations(brickhouse_center),
         ],
         x_minus=[
             StructureRotation(brickhouse_middle, 3),
+            *all_rotations(brickhouse_center),
         ],
         z_plus=[
             StructureRotation(brickhouse_middle, 2),
+            *all_rotations(brickhouse_center),
         ],
         z_minus=[
             StructureRotation(brickhouse_middle, 0),
+            *all_rotations(brickhouse_center),
         ],
         y_plus=[
             *all_rotations(brickhouse_roofhouse_courtyard)
@@ -293,6 +309,7 @@ structure_adjecencies = {
         structure_name=brickhouse_inner_corner_m2m,
         x_plus=[
             StructureRotation(brickhouse_middle, 1),
+            *all_rotations(brickhouse_center),
         ],
         x_minus=[
             StructureRotation(brickhouse_middle, 2),
@@ -302,6 +319,7 @@ structure_adjecencies = {
         ],
         z_minus=[
             StructureRotation(brickhouse_middle, 0),
+            *all_rotations(brickhouse_center),
         ],
         y_plus=[
             StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 0),
@@ -326,6 +344,7 @@ structure_adjecencies = {
         structure_name=brickhouse_roofhouse_inner_corner_m2m,
         x_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 1),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         x_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 2),
@@ -335,6 +354,7 @@ structure_adjecencies = {
         ],
         z_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 0),
+            *all_rotations(brickhouse_roofhouse_center),
         ],
         y_minus=[
             StructureRotation(brickhouse_inner_corner_m2m, 0),
@@ -419,18 +439,26 @@ structure_adjecencies = {
         x_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 1),
             *all_rotations(brickhouse_roofhouse_courtyard),
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 3),            
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 2),                        
         ],
         x_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 3),
             *all_rotations(brickhouse_roofhouse_courtyard),
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 1),            
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 0),                        
         ],
         z_plus=[
             StructureRotation(brickhouse_roofhouse_middle, 2),
             *all_rotations(brickhouse_roofhouse_courtyard),
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 0),            
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 3),                        
         ],
         z_minus=[
             StructureRotation(brickhouse_roofhouse_middle, 0),
             *all_rotations(brickhouse_roofhouse_courtyard),
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 2),            
+            StructureRotation(brickhouse_roofhouse_inner_corner_m2m, 1),                        
         ],
         y_minus=[
             *all_rotations(brickhouse_center)
