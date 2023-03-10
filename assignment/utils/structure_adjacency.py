@@ -171,10 +171,14 @@ structure_adjecencies = {
         x_plus=[
             StructureRotation(brickhouse_middle, 0),
             StructureRotation(brickhouse_entrance, 1),
+            StructureRotation(brickhouse_balcony, 1),
+            StructureRotation(brickhouse_corner, 1),
         ],
         z_plus=[
-            StructureRotation(brickhouse_entrance, 3),
             StructureRotation(brickhouse_middle, 3),
+            StructureRotation(brickhouse_entrance, 3),
+            StructureRotation(brickhouse_balcony, 3),
+            StructureRotation(brickhouse_corner, 3),
         ],
         y_plus=[
             StructureRotation(brickhouse_small_window_flat_roof, 0),
@@ -185,11 +189,15 @@ structure_adjecencies = {
         structure_name=brickhouse_balcony,
         x_plus=[
             StructureRotation(brickhouse_middle, 0),
+            StructureRotation(brickhouse_entrance, 1),
             StructureRotation(brickhouse_balcony, 1),
+            StructureRotation(brickhouse_corner, 1),
         ],
         z_plus=[
-            StructureRotation(brickhouse_balcony, 3),
             StructureRotation(brickhouse_middle, 3),
+            StructureRotation(brickhouse_entrance, 3),
+            StructureRotation(brickhouse_balcony, 3),
+            StructureRotation(brickhouse_corner, 3),
         ],
         y_plus=[
             StructureRotation(brickhouse_small_window_flat_roof, 0),
@@ -200,11 +208,15 @@ structure_adjecencies = {
         structure_name=brickhouse_corner,
         x_plus=[
             StructureRotation(brickhouse_middle, 0),
+            StructureRotation(brickhouse_entrance, 1),
+            StructureRotation(brickhouse_balcony, 1),
             StructureRotation(brickhouse_corner, 1),
         ],
         z_plus=[
-            StructureRotation(brickhouse_corner, 3),
             StructureRotation(brickhouse_middle, 3),
+            StructureRotation(brickhouse_entrance, 3),
+            StructureRotation(brickhouse_balcony, 3),
+            StructureRotation(brickhouse_corner, 3),
         ],
         y_plus=[
             StructureRotation(brickhouse_big_window_flat_roof, 0),
