@@ -165,11 +165,19 @@ fontsize=11pt
 
 \section{Introduction}
 
-% Discuss WFC on block level which consumes too much memory on 100x100x100
 
-\section{Implementation}
+The following report is structured into independent sections, 
+containing the method and results for the respective component.
+First, a method for the building placement is described, results are shown and limitations are discussed.
+The next section focuses on the building generation 
+using the wave function collapse (WFC) algorithm. % TODO: cite?
+Third, a method do add interior decoration is shown.
+Fourth, results for the combination of building placement, building generation and interior decoration are shown.
+Finally, the report concludes with a discussion of the results, the limitations of this approach and 
+directions for improvement.
 
-\subsection{Building Placement}
+
+\section{Building Placement}
 
 % Buffer around building region (improvement: make buffer require blocky of smaller (not equal) height)
 
@@ -178,14 +186,117 @@ fontsize=11pt
 
 % Implement as integeger linear optimization problem. But current performance is usable.
 
+\section{Building Generation}
+This section describes the generation of buildings using the wave function collapse (WFC) algorithm.
 
-\subsection{Building Structure Building Blocks}
+
+
+\subsection{Structure Building Blocks}
+In order to use the WFC algorithm a set of small structures, sometimes called tiles or prefabs, 
+is required to combine them to a larger structure, i.e. a building. 
+These structures can in general be of any granularity from single blocks 
+to larger groups such as walls, rooms or even whole corridors. 
+However, there is a trade-off between variation and believability.
+There are more combinations of smaller structures in a fixed area 
+than there are combinations of larger structures 
+but many of these combinations of smaller structure combinations 
+result in unrealistic buildings, e.g. five doors placed next to each other. 
+Therefore, building structures with a size of 
+$11 \times 6 \times 11$ and $11 \times 9 \times 11$  blocks 
+were used, where each represents a single room of a building.  
+This size gives enough possible variations in the typical size of a Minecraft house 
+while believability, accessibility and architectural style. 
+A selection of the designed structures can be seen in \autoref{fig_building_strucutres}.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/structures/building-strucutres-close-up.png}
+    \caption{From left to right: building entrance corner, balcony and big window corner.}
+    \label{fig_building_strucutres_close_up}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+      \includegraphics[width=\textwidth]{images/structures/building-strucutres-doors.png}
+      \caption{Doors between each building structure.}
+  \end{subfigure}
+  \caption{Some manually designed building structures 
+    which can be combined by placing them next to each other. 
+    Doors between them are aligned to ensure accessibility of the whole building.}
+  \label{fig_building_strucutres}
+\end{figure}
+
 % Structure scanning
-% Structure building / placement (translations, roatations)
+In order to duplicate these structures, and apply translation and rotation onto them,
+they need to be constructed using a computer program.
+It was chosen to follow a scanner-builder approach over 
+manually translating these structures into code that constructs them using 
+simple geometry like cuboids 
+because the scanner-builder approach is easier to implement 
+and allows for faster iterations.
+The scanner\footnote{\texttt{structure\_scanner.py}} works by 
+serializing the user defined build area to a Python pickle file. 
+Afterwards, the builder\footnote{\texttt{structure\_builder.py}} 
+can be used to duplicate the scanned structure with arbitrary rotation and translation.
+Every structure was scanned from the bottom left corner in positive XZ direction, 
+by standing on the golden blocks shown in \autoref{fig_building_strucutres_close_up}.
 
-\subsection{Buildings}
+% Structure building / placement (translations, roatations)
+In total 14 building structures were designed, which are shown in figure \autoref{fig_building_strucutres_rotations}.
+They are split between first floor ($11 \times 6 \times 11$) and roof house ($11 \times 9 \times 11$) elements.
+There are simple corner elements and middle wall elements to allow building $n \times 2$
+rectangular shaped buildings.
+Additionally, center elements like \texttt{center} and \texttt{courtyard} were added to 
+support $n \times m$ shapes. 
+Later, the concept of an inner corner was added to allow for more complex shapes like  
+$L$, $O$ and $+$.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/structures/buidling-strucutres-rotations-1.png}
+    \caption{From left to right: building entrance corner, middle wall,
+              balcony corner, big window corner, courtyard and inner corner.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+      \includegraphics[width=\textwidth]{images/structures/buidling-strucutres-rotations-2.png}
+      \caption{From left to right: corner roof house, middle wall roof house, inner corner roof house,
+              courtyard roof house, center, center roof house, corner flat roof and big window flat roof.}
+  \end{subfigure}
+  \caption{All 14 designed building structures in all rotations. 
+    Each column represents a single structure and 
+    each of the four rows represent a rotation of that structure. }
+  \label{fig_building_strucutres_rotations}
+\end{figure}
+
+
+With the introduced building structures one can already 
+build whole houses by deterministically placing them next to each other, 
+while making sure that all doors align as they are supposed to. 
+Two examples are shown in \autoref{fig_deterministic_buildings}.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/buildings/deterministic-building-with-roofhouse.png}
+    \caption{A $3 \times 3$ house with courtyard and a second floor (roof house).}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+      \includegraphics[width=\textwidth]{images/buildings/deterministic-building-with-flat-roof.png}
+      \caption{A $2 \times 2$ house with a flat roof.}
+  \end{subfigure}
+  \caption{Two deterministically built buildings.}
+  \label{fig_deterministic_buildings}
+\end{figure}
+
+
 
 \subsection{Wave function collapse}
+
+
+
 % Symmetry checker
 
 % Retry insteack of backtracking
@@ -194,9 +305,15 @@ fontsize=11pt
 
 % Air around building to enforce closed form
 
-\subsection{Interior Design}
+\section{Interior Design}
 
-\section{Results}
+\section{Overall Results}
+
+\section{Discussion}
+% Summarize results
+% Limitations
+% Directions for improvement
+
 
 
 %%%
