@@ -60,7 +60,7 @@ print("Sturcutre bottom left corner", buildArea.offset)
 print("Strucutre size", buildArea.size)
 print("Structure blocks", buildArea.volume)
 
-structure = Structure(name="empty-space-air", offset=buildArea.offset, size=buildArea.size, blocks={})
+structure = Structure(name="brickhouse-roofhouse-middle-to-flat", offset=buildArea.offset, size=buildArea.size, blocks={})
 print("Scanning structure", structure.name)
 for block_global in buildArea.inner:
     vec = block_global - buildArea.offset

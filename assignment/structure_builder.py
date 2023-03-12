@@ -1,21 +1,15 @@
 """
-Load a building block sturucte
-
-stand at the bottom left corner of the builing block and look towards it
-Building is expected to be 11x16x11
-/setbuildarea ~2 ~ ~ ~11 ~16 ~10
+Build a building block sturucte
 """
 
 import pickle
 import sys
+
+from gdpc import Editor, Transform, __url__
+from gdpc.exceptions import InterfaceConnectionError
 from glm import ivec3
 
-
-from gdpc import __url__, Editor, Transform
-from gdpc.exceptions import InterfaceConnectionError
-
 from assignment.utils.structure import Structure
-
 
 # Create an editor object.
 # The Editor class provides a high-level interface to interact with the Minecraft world.
@@ -35,7 +29,7 @@ except InterfaceConnectionError:
     sys.exit(1)
 
 
-structure_name = "brickhouse-entrance"
+structure_name = "brickhouse-roofhouse-middle-to-flat"
 filename = "structures/" + structure_name + ".pkl"
 print("Loading strucutre data from disk", filename)
 with open(filename, "rb") as f:
@@ -45,10 +39,11 @@ if not isinstance(structure, Structure):
     raise Exception("Unexpected data loaded from file " + filename)
 
 
-destination_pos = ivec3(-190, -1, 120)
+destination_pos = ivec3(-70, 10, 223)
 print("Replicating building")
 with editor.pushTransform(Transform(translation=destination_pos, rotation=0)):
     for vec, block in structure.blocks.items():
+        # vec = (-vec[0], vec[1], vec[2]) # mirror at axis
         editor.placeBlock(vec, block)
 editor.flushBuffer()
 

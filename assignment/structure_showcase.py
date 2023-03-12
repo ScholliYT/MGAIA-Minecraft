@@ -19,6 +19,8 @@ from assignment.utils.structures import (
     brickhouse_roofhouse_courtyard,
     brickhouse_roofhouse_inner_corner_m2m,
     brickhouse_roofhouse_middle,
+    brickhouse_roofhouse_middle_to_flat,
+    brickhouse_roofhouse_middle_to_flat_mirrored_x,
     brickhouse_small_window_flat_roof,
 )
 
@@ -59,6 +61,8 @@ def main():
             load_structure(brickhouse_inner_corner_m2m),
             load_structure(brickhouse_roofhouse_corner),
             load_structure(brickhouse_roofhouse_middle),
+            load_structure(brickhouse_roofhouse_middle_to_flat),
+            load_structure(brickhouse_roofhouse_middle_to_flat_mirrored_x),
             load_structure(brickhouse_roofhouse_inner_corner_m2m),
             load_structure(brickhouse_roofhouse_courtyard),
             load_structure(brickhouse_center),

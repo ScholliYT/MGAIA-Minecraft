@@ -26,6 +26,8 @@ from assignment.utils.structures import (
     brickhouse_roofhouse_inner_corner_m2m,
     brickhouse_roofhouse_middle,
     brickhouse_small_window_flat_roof,
+    brickhouse_roofhouse_middle_to_flat,
+    brickhouse_roofhouse_middle_to_flat_mirrored_x,
     empty_space_air,
 )
 from assignment.utils.wave_function_collaplse_util import collapse_to_air_on_outer_rectangle
@@ -114,7 +116,7 @@ def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
 
 def random_building() -> List[List[List[Tuple[Structure, int]]]]:
 
-    wfc = WaveFunctionCollapse((9,2,9), structure_adjecencies)
+    wfc = WaveFunctionCollapse((15,2,15), structure_adjecencies)
 
     def reinit():
         collapse_to_air_on_outer_rectangle(wfc)
@@ -130,9 +132,18 @@ def random_building() -> List[List[List[Tuple[Structure, int]]]]:
         # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_middle, 3))
 
 
-        wfc.collapse_cell([5,0,5], StructureRotation(brickhouse_inner_corner_m2m, 0))
+        # wfc.collapse_cell([5,0,5], StructureRotation(brickhouse_inner_corner_m2m, 0))
+        # wfc.collapse_cell([13,0,13], StructureRotation(brickhouse_center, 0))
 
-        # wfc.collapse_cell([6,0,5], StructureRotation(brickhouse_courtyard, 0))
+        # wfc.collapse_cell([8,0,8], StructureRotation(brickhouse_courtyard, 0))
+        # wfc.collapse_cell([11,0,4], StructureRotation(brickhouse_courtyard, 0))
+
+        wfc.collapse_cell([5,1,5], StructureRotation(brickhouse_roofhouse_middle_to_flat, 0))
+
+        
+
+
+
 
         # wfc.collapse_cell([6,0,6], StructureRotation(brickhouse_entrance, 2))
 
@@ -183,7 +194,7 @@ def main():
     ED = Editor(buffering=True)
 
     try:
-        ED.transform @= Transform(translation=ivec3(-110, -1, 310))
+        ED.transform @= Transform(translation=ivec3(-110, -1, 400))
 
         print("Building house")
         # building = deterministic_building()
