@@ -168,11 +168,22 @@ fontsize=11pt
 \section{Introduction}
 
 
-The following report is structured into independent sections, 
+% Short description of WFC
+The wave function collapse (WFC) algorithm
+
+% Related work
+The WFC algorithm has already been applied to some 
+problems in PCG such as building generation \cite{Eleni-2020}.
+It has also been applied to village generation in Minecraft \cite{Mifek-2022}.
+
+
+\subsection*{Structure}
+% Structure
+The report is structured into independent sections, 
 containing the method and results for the respective component.
 First, a method for the building placement is described, results are shown and limitations are discussed.
 The next section focuses on the building generation 
-using the wave function collapse (WFC) algorithm. % TODO: cite?
+using the WFC algorithm. % TODO: cite?
 Third, a method do add interior decoration is shown.
 Fourth, results for the combination of building placement, building generation and interior decoration are shown.
 Finally, the report concludes with a discussion of the results, the limitations of this approach and 
@@ -181,12 +192,11 @@ directions for improvement.
 
 \section{Building Placement}
 
-% Buffer around building region (improvement: make buffer require blocky of smaller (not equal) height)
+% Buffer around building region (improvement: make buffer require blocks of smaller (not equal) height)
 
 % Scanner fails to handle water and starts building on sea level or above water
 % Same problem with ice blocks
 
-% Implement as integeger linear optimization problem. But current performance is usable.
 
 \section{Building Generation}
 This section describes the generation of buildings using the wave function collapse (WFC) algorithm.
@@ -318,6 +328,7 @@ The others can be derived from this.
 In addition, one can only define the rules that are allowed, 
 and assume for all rules that are not defined that they are not allowed. 
 
+% Ruleset and symmetry checker
 The total of 320 rules\footnote{\texttt{structure\_adjacency.py}},
 that were necessary for the 14 structures, were realized directly in Python. 
 A small excerpt from this is shown in \autoref{lst_structure_adjacency_excerpt}. 
@@ -340,8 +351,8 @@ the implementation to drive the implicit rules are both nontrivial.
   \label{lst_structure_adjacency_excerpt}
 \end{listing}
 
-
-% Symmetry checker
+\subsubsection{Wave Function Collapse Algorithm}
+The wave function collapse algorithm \cite{WFC_GitHub, WFC_YouTube}.
 
 % Retry insteack of backtracking
 
@@ -361,6 +372,7 @@ the implementation to drive the implicit rules are both nontrivial.
 
 
 % Directions for improvement
+%   Implement placement as integeger linear optimization problem. But current performance is usable.
 %   Reuse rules for structures that can be replaced by each other (e.g. corners)
 %   Add more abstraction for rule set definition
 
