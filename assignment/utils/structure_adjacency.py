@@ -508,23 +508,3 @@ if __name__ == '__main__':
     print(structure_adjecencies[brickhouse_entrance].adjecent_structrues("z_minus", 3))
 
     check_symmetry(structure_adjecencies)
-
-
-
-
-# # From self rotation = 1
-# brickhouse_entrance: StructureAdjacency(
-#     structure_name=brickhouse_entrance,
-#     x_minus=[
-#         StructureRotation(brickhouse_middle, 0),
-#         StructureRotation(brickhouse_entrance, 0),
-#     ],
-#     z_plus=[
-#         StructureRotation(brickhouse_entrance, 2),
-#         StructureRotation(brickhouse_middle, 1),
-#     ],
-#     y_plus=[
-#         # StructureRotation(brickhouse_small_window_flat_roof, 1),
-#         StructureRotation(brickhouse_roofhouse_corner, 1),
-#     ]
-# )

@@ -26,7 +26,9 @@ fontsize=11pt
 \usepackage[autostyle=true,german=quotes]{csquotes}
 \usepackage{caption}
 \usepackage{subcaption}
-% \usepackage{minted}
+\usepackage{minted}
+\providecommand*{\listingautorefname}{Listing}
+
 
 %%%
 %%% technical packages
@@ -206,24 +208,24 @@ $11 \times 6 \times 11$ and $11 \times 9 \times 11$  blocks
 were used, where each represents a single room of a building.  
 This size gives enough possible variations in the typical size of a Minecraft house 
 while believability, accessibility and architectural style. 
-A selection of the designed structures can be seen in \autoref{fig_building_strucutres}.
+A selection of the designed structures can be seen in \autoref{fig_building_structures}.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}{0.48\textwidth}
-    \includegraphics[width=\textwidth]{images/structures/building-strucutres-close-up.png}
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/structures/building-structures-close-up.png}
     \caption{From left to right: building entrance corner, balcony and big window corner.}
-    \label{fig_building_strucutres_close_up}
+    \label{fig_building_structures_close_up}
   \end{subfigure}
   \hfill
-  \begin{subfigure}{0.48\textwidth}
-      \includegraphics[width=\textwidth]{images/structures/building-strucutres-doors.png}
+  \begin{subfigure}[t]{0.48\textwidth}
+      \includegraphics[width=\textwidth]{images/structures/building-structures-doors.png}
       \caption{Doors between each building structure.}
   \end{subfigure}
   \caption{Some manually designed building structures 
     which can be combined by placing them next to each other. 
     Doors between them are aligned to ensure accessibility of the whole building.}
-  \label{fig_building_strucutres}
+  \label{fig_building_structures}
 \end{figure}
 
 % Structure scanning
@@ -239,10 +241,10 @@ serializing the user defined build area to a Python pickle file.
 Afterwards, the builder\footnote{\texttt{structure\_builder.py}} 
 can be used to duplicate the scanned structure with arbitrary rotation and translation.
 Every structure was scanned from the bottom left corner in positive XZ direction, 
-by standing on the golden blocks shown in \autoref{fig_building_strucutres_close_up}.
+by standing on the golden blocks shown in \autoref{fig_building_structures_close_up}.
 
 % Structure building / placement (translations, roatations)
-In total 14 building structures were designed, which are shown in figure \autoref{fig_building_strucutres_rotations}.
+In total 14 building structures were designed, which are shown in figure \autoref{fig_building_structures_rotations}.
 They are split between first floor ($11 \times 6 \times 11$) and roof house ($11 \times 9 \times 11$) elements.
 There are simple corner elements and middle wall elements to allow building $n \times 2$
 rectangular shaped buildings.
@@ -253,21 +255,22 @@ $L$, $O$ and $+$.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}{0.48\textwidth}
-    \includegraphics[width=\textwidth]{images/structures/buidling-strucutres-rotations-1.png}
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/structures/buidling-structures-rotations-1.png}
     \caption{From left to right: building entrance corner, middle wall,
               balcony corner, big window corner, courtyard and inner corner.}
   \end{subfigure}
   \hfill
-  \begin{subfigure}{0.48\textwidth}
-      \includegraphics[width=\textwidth]{images/structures/buidling-strucutres-rotations-2.png}
+  \begin{subfigure}[t]{0.48\textwidth}
+      \includegraphics[width=\textwidth]{images/structures/buidling-structures-rotations-2.png}
       \caption{From left to right: corner roof house, middle wall roof house, inner corner roof house,
               courtyard roof house, center, center roof house, corner flat roof and big window flat roof.}
   \end{subfigure}
   \caption{All 14 designed building structures in all rotations. 
     Each column represents a single structure and 
-    each of the four rows represent a rotation of that structure. }
-  \label{fig_building_strucutres_rotations}
+    each of the four rows represent a rotation of that structure.
+    The lowermost row is the baseline rotation 0. }
+  \label{fig_building_structures_rotations}
 \end{figure}
 
 
@@ -278,12 +281,12 @@ Two examples are shown in \autoref{fig_deterministic_buildings}.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}{0.48\textwidth}
+  \begin{subfigure}[t]{0.48\textwidth}
     \includegraphics[width=\textwidth]{images/buildings/deterministic-building-with-roofhouse.png}
     \caption{A $3 \times 3$ house with courtyard and a second floor (roof house).}
   \end{subfigure}
   \hfill
-  \begin{subfigure}{0.48\textwidth}
+  \begin{subfigure}[t]{0.48\textwidth}
       \includegraphics[width=\textwidth]{images/buildings/deterministic-building-with-flat-roof.png}
       \caption{A $2 \times 2$ house with a flat roof.}
   \end{subfigure}
@@ -293,8 +296,49 @@ Two examples are shown in \autoref{fig_deterministic_buildings}.
 
 
 
-\subsection{Wave function collapse}
+\subsection{Wave Function Collapse}
+With the previously introduced set of structures it was only possible to generate deterministic
+buildings so far. 
+Using the wave function collapse (WFC) algorithm it will be possible to generate 
+randomized buildings which are still believable 
+because they are only built out of valid combinations of structure building blocks. 
 
+\subsubsection{Rule Set}
+To achieve this, it is necessary to define the adjacency rules for each structure. 
+These define how structures can be placed next to each other, 
+whereby rotations of the structures must also be taken into account. 
+For the 14 structures with six sides and four rotations (rotation around the Y-axis only), 
+this would mean that $14 \cdot 6 \cdot 4 = 336$ rotated sides would have to be considered. 
+For each of them one would have to define whether they may be placed next to each other, 
+i.e. $\frac{336 (336-1)}{2} = 56280$ rules. 
+Obviously, this is not very practical to define so many rules manually. 
+Therefore, one can make use of the symmetries of the structures 
+and define the adjacency rules only for one rotation of the structure. 
+The others can be derived from this. 
+In addition, one can only define the rules that are allowed, 
+and assume for all rules that are not defined that they are not allowed. 
+
+The total of 320 rules\footnote{\texttt{structure\_adjacency.py}},
+that were necessary for the 14 structures, were realized directly in Python. 
+A small excerpt from this is shown in \autoref{lst_structure_adjacency_excerpt}. 
+Direct relationships between the objects were specified directly, 
+i.e. if A is allowed next to B, there must also be a rule that B is allowed to be next to A. 
+This explicit symmetry makes it easier to create the rules, 
+as errors can be avoided in this way. 
+Additionally, a consistency check \texttt{check\_symmetry}
+for the rule set was implemented along with some other unit tests
+because the process of defining the rule set and 
+the implementation to drive the implicit rules are both nontrivial.
+
+
+\begin{listing}[ht]
+  \inputminted[baselinestretch=0.55,linenos,breaklines]{python}{listings/structure_adjacency_excerpt.py}
+  \caption{A (very) short excerpt from the adjacency rules limited to the middle wall and center structure.
+    All rules are defined from the respective element's perspective in rotation 0 
+    (lowermost row in \autoref{fig_building_structures_rotations}).
+  }    
+  \label{lst_structure_adjacency_excerpt}
+\end{listing}
 
 
 % Symmetry checker
@@ -311,8 +355,14 @@ Two examples are shown in \autoref{fig_deterministic_buildings}.
 
 \section{Discussion}
 % Summarize results
+
+
 % Limitations
+
+
 % Directions for improvement
+%   Reuse rules for structures that can be replaced by each other (e.g. corners)
+%   Add more abstraction for rule set definition
 
 
 
