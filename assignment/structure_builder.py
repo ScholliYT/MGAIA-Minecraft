@@ -29,7 +29,7 @@ except InterfaceConnectionError:
     sys.exit(1)
 
 
-structure_name = "brickhouse-roofhouse-middle-to-flat"
+structure_name = "brickhouse-roofhouse-corner"
 filename = "structures/" + structure_name + ".pkl"
 print("Loading strucutre data from disk", filename)
 with open(filename, "rb") as f:
@@ -39,7 +39,7 @@ if not isinstance(structure, Structure):
     raise Exception("Unexpected data loaded from file " + filename)
 
 
-destination_pos = ivec3(-70, 10, 223)
+destination_pos = ivec3(-110, 7, 204)
 print("Replicating building")
 with editor.pushTransform(Transform(translation=destination_pos, rotation=0)):
     for vec, block in structure.blocks.items():
