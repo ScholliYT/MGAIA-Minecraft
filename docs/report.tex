@@ -166,15 +166,49 @@ fontsize=11pt
 
 
 \section{Introduction}
-
+The world in modern games are becoming very large, 
+requiring lots of manual work by designers 
+to build and place buildings and other elements of the world. 
+Recently, the use of procedural content generation (PCG) in this area 
+stated to increase because it lowers the required amount of work 
+by automatically generating believable content. 
+There are many problems where PCG can be applied,
+but this report explores the generation of a believable house in Minecraft,
+including the placement, consistent structure and randomness. 
+For the generation of the house itself, 
+the wave function collapse algorithm will be used.
 
 % Short description of WFC
-The wave function collapse (WFC) algorithm
+The wave function collapse (WFC) algorithm \cite{WFC_GitHub}, 
+which was introduced in 2016 by Maxim Gumin, 
+is a new algorithm for PCG inspired by quantum mechanic principles.
+It uses the concept of 
+superposition and state collapse. 
+A particle can be in a superposition, i.e. in many states at once,
+until it collapses to a single state. 
+The same concept is used in the WFC algorithm, 
+which first initializes all "particles" in the state space 
+to a superposition and then collapses one of them, 
+propagating the induced changes to neighboring particles 
+that are defined by a set of rules. 
+Take for example a rule that states that next to a particle in state A
+there must be a particle in state B.
+If we have a state space of two particles in the initial superposition:
+$[(A,B), (A,B)]$ and collapse the first to state B: $[(B), (A,B)]$, 
+the rule forces us to choose A for the second $[(B), (A)]$ particle.
+The algorithm keeps collapsing and propagating until all 
+particles are in a single state. 
+
 
 % Related work
-The WFC algorithm has already been applied to some 
-problems in PCG such as building generation \cite{Eleni-2020}.
-It has also been applied to village generation in Minecraft \cite{Mifek-2022}.
+The WFC algorithm has already been applied to
+problems in PCG such as building generation \cite{Eleni-2020}, 
+where the individual particle states need to be thought of as building structure elements 
+like walls, windows and doors, 
+or 2D level generation \cite{WFC_YouTube},
+where the states are reusable level fragments.
+It has also been applied to village generation in Minecraft \cite{Mifek-2022}
+using individual buildings and infrastructure components instead of the particle states.
 
 
 \subsection*{Structure}
@@ -352,7 +386,7 @@ the implementation to drive the implicit rules are both nontrivial.
 \end{listing}
 
 \subsubsection{Wave Function Collapse Algorithm}
-The wave function collapse algorithm \cite{WFC_GitHub, WFC_YouTube}.
+The wave function collapse algorithm \cite{WFC_GitHub}.
 
 % Retry insteack of backtracking
 
