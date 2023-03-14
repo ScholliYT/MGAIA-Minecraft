@@ -21,7 +21,7 @@ class WaveFunctionCollapse:
             StructureRotation(s_name, rotation) 
             for s_name, rotation in itertools.product(structure_adjecencies.keys(), range(4)))
 
-        self._initialize_state_space()
+        self._initialize_state_space_superposition()
     
     def _cell_coordinates(self):
         # return itertools.product(*self.state_space_size)
@@ -30,7 +30,7 @@ class WaveFunctionCollapse:
                 for z in range(self.state_space_size[2]):
                     yield (x,y,z)
 
-    def _initialize_state_space(self) -> None:
+    def _initialize_state_space_superposition(self) -> None:
         self.state_space = [
             [[self.superposition.copy() # TODO: is a copy enough?
              for z in range(self.state_space_size[2])] 
@@ -158,7 +158,7 @@ class WaveFunctionCollapse:
                 reinit()
 
         while not self.collapse():
-            self._initialize_state_space()
+            self._initialize_state_space_superposition()
             if reinit:
                 reinit()
 
@@ -181,3 +181,9 @@ class WaveFunctionCollapse:
              for y in range(self.state_space_size[1])] 
              for x in range(self.state_space_size[0])]
         return ret
+    
+    def used_structures(self):
+        for x in range(self.state_space_size[0]):
+            for y in range(self.state_space_size[1]):
+                for z in range(self.state_space_size[2]):
+                    yield list(self.state_space[x][y][z])[0]

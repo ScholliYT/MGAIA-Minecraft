@@ -9,6 +9,7 @@ from tqdm import tqdm
 from assignment.utils.structure import Structure, build_structure, load_structure
 from assignment.utils.structure_adjacency import (
     StructureRotation,
+    all_rotations,
     structure_adjecencies,
 )
 from assignment.utils.structures import (
@@ -114,9 +115,9 @@ def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
     return building
 
 
-def random_building() -> List[List[List[Tuple[Structure, int]]]]:
+def random_building(size: Tuple[int,int,int] = (9,2,9)) -> WaveFunctionCollapse:
 
-    wfc = WaveFunctionCollapse((6,2,6), structure_adjecencies)
+    wfc = WaveFunctionCollapse(size, structure_adjecencies)
 
     def reinit():
         collapse_to_air_on_outer_rectangle(wfc)
@@ -125,7 +126,7 @@ def random_building() -> List[List[List[Tuple[Structure, int]]]]:
         # wfc.collapse_cell([3,0,3], StructureRotation(empty_space_air, 0))
 
 
-        wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
+        # wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
         # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_entrance, 3))
         # wfc.collapse_cell([1,0,3], StructureRotation(brickhouse_middle, 3))
         # wfc.collapse_cell([1,0,4], StructureRotation(brickhouse_middle, 3))
@@ -138,7 +139,7 @@ def random_building() -> List[List[List[Tuple[Structure, int]]]]:
         # wfc.collapse_cell([8,0,8], StructureRotation(brickhouse_courtyard, 0))
         # wfc.collapse_cell([11,0,4], StructureRotation(brickhouse_courtyard, 0))
 
-        wfc.collapse_cell([1,1,3], StructureRotation(brickhouse_roofhouse_middle_to_flat, 0))
+        # wfc.collapse_cell([1,1,3], StructureRotation(brickhouse_roofhouse_middle_to_flat, 0))
 
         
 
@@ -147,17 +148,21 @@ def random_building() -> List[List[List[Tuple[Structure, int]]]]:
 
         # wfc.collapse_cell([6,0,6], StructureRotation(brickhouse_entrance, 2))
 
-
     retries = wfc.collapse_with_retry(reinit=reinit)
+    while set(wfc.used_structures()).issubset(set([*all_rotations(empty_space_air)])): # used air structures only
+        wfc._initialize_state_space_superposition()
+        retries += 1 + wfc.collapse_with_retry(reinit=reinit)
     print(f"WFC collapsed after {retries} retries")
+    return wfc
 
+def wfc_state_to_minecraft_blocks(building: List[List[List[StructureRotation]]]) -> List[List[List[Tuple[Structure, int]]]]:
     # transform StructuredRotation to (Structure,rotation) tuple
     buidling = [[[
         (load_structure(z.structure_name), z.rotation)
         for z in ys] 
         for ys in xs] 
-        for xs in reversed(wfc.collapsed_state())]
-
+        for xs in reversed(building)]
+    
     return buidling
 
 
@@ -199,7 +204,8 @@ def main():
         print("Building house")
         # building = deterministic_building()
 
-        building = random_building()
+        wfc = random_building()
+        building = wfc_state_to_minecraft_blocks(wfc.collapsed_state())
         build_brickhouse(editor=ED, building=building)
 
 

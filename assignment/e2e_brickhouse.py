@@ -1,97 +1,52 @@
-
-import logging
-import pickle
-from random import randint
-from typing import List, Tuple
-
-from termcolor import colored
-
+import math
 from gdpc import Block, Editor, Transform
 from gdpc import geometry as geo
-from gdpc import minecraft_tools as mt
-from gdpc import editor_tools as et
-from glm import ivec3
-from assignment.brickhouse import build_brickhouse
-
-from assignment.utils.structure import Structure, load_structure
-
-import pickle
-import sys
-from typing import Dict, List, Tuple
+from gdpc.vector_tools import addY, setY
 from glm import ivec2, ivec3
 
-import numpy as np
-
-from gdpc import __url__, Editor, Block, Transform
-from gdpc.exceptions import InterfaceConnectionError, BuildAreaNotSetError
-from gdpc.vector_tools import addY, setY, Rect
-from gdpc import geometry as geo
+from assignment.brickhouse import build_brickhouse, random_building, wfc_state_to_minecraft_blocks
+from assignment.buildregion_finder import get_build_area, get_heights
 from assignment.utils.buildregion import score_all_possible_buildregions
-
-
-
-# Here, we set up Python's logging system.
-# GDPC sometimes logs some errors that it cannot otherwise handle.
-logging.basicConfig(format=colored("%(name)s - %(levelname)s - %(message)s", color="yellow"))
-
+from assignment.utils.wave_function_collaplse_util import (
+    print_state,
+)
 
 
 def main():
-    editor = Editor(buffering=True)
-
-
-    try:
-        editor.checkConnection()
-    except InterfaceConnectionError:
-        print(
-            f"Error: Could not connect to the GDMC HTTP interface at {editor.host}!\n"
-            "To use GDPC, you need to use a \"backend\" that provides the GDMC HTTP interface.\n"
-            "For example, by running Minecraft with the GDMC HTTP mod installed.\n"
-            f"See {__url__}/README.md for more information."
-        )
-        sys.exit(1)
-
-
-    # Get the build area.
-    try:
-        buildArea = editor.getBuildArea()
-    except BuildAreaNotSetError:
-        print(
-            "Error: failed to get the build area!\n"
-            "Make sure to set the build area with the /setbuildarea command in-game.\n"
-            "For example: /setbuildarea ~0 0 ~0 ~64 200 ~64"
-        )
-        sys.exit(1)
+    ED = Editor(buffering=True)
 
     try:
-        print("Loading world slice...")
-        buildRect = buildArea.toRect()
-        worldSlice = editor.loadWorldSlice(buildRect, cache=True)
-        print("World slice loaded!")
 
+        buildArea = get_build_area(ED)
+        heights = get_heights(ED, buildArea)
 
-
-        print("Finding optimal spot to build")
-
-        heights = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
         buffer=2
+        solutions = list(score_all_possible_buildregions(heights, square_sidelenght=11, min_adjecent_squares=2, max_adjecent_squares=9, buffer=buffer))
+        # normalize terraform distance by build area
+        best_solution = max(solutions, key=lambda r: (math.pow(r[1][0]*r[1][1], 1.8))/r[3])
+        region_origin, region_size, region_y, distance = best_solution
 
-        solutions = score_all_possible_buildregions(heights, square_sidelenght=11, min_adjecent_squares=2, max_adjecent_squares=5, buffer=buffer)
-        best_solution = min(solutions, key=lambda r: r[3])
-
-        first = setY(buildArea.offset,0) + addY(ivec2(*best_solution[0]), best_solution[2])
-        last = first + addY(ivec2(*best_solution[1]), 0)
-        area_size = best_solution[1]
-
+        first = setY(buildArea.offset,0) + addY(ivec2(*region_origin), region_y)
+        last = first + addY(ivec2(*region_size), 0) - ivec3(1,0,1)
+        print("Best position to build [", first.to_tuple(), last.to_tuple(), "] of size", 
+              region_size, "requires terraforming of", distance, "blocks")
+        
+        # geo.placeCuboid(ED, first, last, Block("red_wool"))
         buffer_vec = ivec3(buffer, 0, buffer)
-        first += buffer_vec
-        last -= buffer_vec
-        area_size = tuple(np.array(area_size) - 2*buffer)
-        print("Best position to build [", first.to_tuple(), last.to_tuple(), "] of size", area_size, "requires terraforming of", best_solution[3], "blocks")
+        geo.placeCuboid(ED, first + buffer_vec, last - buffer_vec, Block("white_wool") )
+        ED.flushBuffer()
+
+        building_size = (2+(region_size[0]-2*buffer)//11, 2, 2+(region_size[1]-2*buffer)//11)
+        print("Computing house of size", building_size)
+        wfc = random_building(building_size)
+        print_state(wfc)
+        state_without_air = [[[s for s in ys[1:-1]] for ys in xs] for xs in wfc.collapsed_state()[1:-1]]
+        building = wfc_state_to_minecraft_blocks(state_without_air)
 
         print("Building house")
-        with editor.pushTransform(Transform(translation=first)):
-            build_brickhouse(editor=editor)
+        ED.transform @= Transform(translation=first + buffer_vec + ivec3(0, -1, 0))
+        # remove outer layer of air blocks
+        build_brickhouse(editor=ED, building=building)
 
         print("Done!")
 
