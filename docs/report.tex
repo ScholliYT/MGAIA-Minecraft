@@ -386,15 +386,55 @@ the implementation to drive the implicit rules are both nontrivial.
 \end{listing}
 
 \subsubsection{Wave Function Collapse Algorithm}
-The wave function collapse algorithm \cite{WFC_GitHub}.
-
+The wave function collapse algorithm \cite{WFC_GitHub} 
+is used to generate random valid combinations of the previously introduced building structures.
+A simplified version of the algorithm\footnote{\texttt{wave\_function\_collapse.py}} 
+is shown in \autoref{lst_simplified_wave_function_collapse}.
+The algorithm starts with a state space where each cell is in a superposition of all available building structures.
+If the minimal overall entropy is zero, there is at least one cell for which we can't determine 
 % Retry insteack of backtracking
+any fitting building structure anymore and the whole WFC process restarts. 
+Otherwise, a random cell among all cells with that entropy is selected. 
+Afterwards, that cell is collapsed to a single building structure out of the still 
+possible building structures for that cell (it's superposition).
+The cell state collapse is propagated to update all other cell's superposition
+using the previously defined set of rules. 
+This is repeated until all cells are collapsed, i.e. 
+exactly one building structure is selected for them.
+
+\begin{listing}[ht]
+  \inputminted[baselinestretch=0.55,linenos,breaklines]{python}{listings/wave_function_collapse_simplified.py}
+  \caption{A simplified version of the implemented wave function collapse (WFC) algorithm.}    
+  \label{lst_simplified_wave_function_collapse}
+\end{listing}
 
 % Air structures
-
+To ensure that the generated building is closed, 
+in the sense of only outer walls from the outside, 
+it was necessary to introduce the concept of an air building structure. 
+That structure is essentially the same as any other structure, 
+except that is does not contain any blocks and is only composed of air. 
 % Air around building to enforce closed form
+Using this structure and the appropriate rules that define which sides 
+of an actual building structure need to be placed next to air, 
+one can enforce closed buildings by collapsing the outermost rectangle 
+of cells in the state-space to air.
 
 \section{Interior Design}
+
+The buildings that can be constructed using the techniques and assets presented so far
+are missing interior design like decoration, furniture and lights. 
+To add this to the buildings each building structure can be built with different interior designs,
+yielding a set of variations of that structure that can be used as a drop-in replacement for each other.
+After the WFC algorithm finishes, another algorithm may replace any number of building structures 
+with such a drop-in replacement to add interior design to the building. 
+
+As the focus of this assignment was not on interior design of Minecraft houses, 
+only a few building structures were equipped with these elements. 
+The results can be seen in 
+\autoref{fig_interior_design_entrance}, \autoref{fig_interior_design_middle_center} and 
+\autoref{fig_interior_design_center_bedroom}. 
+
 
 \begin{figure}[ht]
   \centering
@@ -460,12 +500,14 @@ The wave function collapse algorithm \cite{WFC_GitHub}.
 % Limitations
 %   Can't scan structures with block state, e.g. buring campfires.
 %   Can't build structures with lamps hanging from some block
+%   No duplicate structures with different interior design
 
 
 % Directions for improvement
 %   Implement placement as integeger linear optimization problem. But current performance is usable.
 %   Reuse rules for structures that can be replaced by each other (e.g. corners)
 %   Add more abstraction for rule set definition
+%   Use WFC to place interior decoration elements
 
 
 
