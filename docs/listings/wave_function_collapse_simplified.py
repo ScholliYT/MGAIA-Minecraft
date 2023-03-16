@@ -14,4 +14,4 @@ def wfc(self):
         state_superposition = list(self.state_space[x][y][z])
         collapsed_state: StructureRotation = random.choice(state_superposition)
 
-        self.collapse_cell(cell_xyz, collapsed_state)
+        self.collapse_cell_to_state(cell_xyz, collapsed_state)

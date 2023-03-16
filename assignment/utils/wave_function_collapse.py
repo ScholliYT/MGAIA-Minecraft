@@ -8,9 +8,14 @@ from typing import Callable, Dict, List, Set, Tuple, Union
 from assignment.utils.structure_adjacency import StructureAdjacency, StructureRotation
 
 
+class CollapseOutsideOfSuperpositionException(Exception):
+    pass
+
 class WaveFunctionCollapse:
 
-    def __init__(self, state_space_size: Tuple[int,int,int], structure_adjecencies: Dict[str, StructureAdjacency]) -> None:
+    def __init__(self, state_space_size: Tuple[int,int,int], 
+                 structure_adjecencies: Dict[str, StructureAdjacency], 
+                 structure_weights: Union[Callable, None] = None) -> None:
         if not state_space_size >= (1,1,1):
             raise ValueError("State space size should be at least (1,1,1)")
 
@@ -20,6 +25,8 @@ class WaveFunctionCollapse:
         self.superposition = set(
             StructureRotation(s_name, rotation) 
             for s_name, rotation in itertools.product(structure_adjecencies.keys(), range(4)))
+        
+        self.structure_weights = structure_weights
 
         self._initialize_state_space_superposition()
     
@@ -72,7 +79,7 @@ class WaveFunctionCollapse:
             if len(cell) == entropy:
                 yield (x,y,z)
 
-    def collapse_cell(self, cell_xyz: Tuple[int,int,int], colappsed_structure: StructureRotation):
+    def collapse_cell_to_state(self, cell_xyz: Tuple[int,int,int], colappsed_structure: StructureRotation):
         self.propagate(cell_xyz, set([colappsed_structure]))
 
 
@@ -85,7 +92,7 @@ class WaveFunctionCollapse:
     def propagate(self, cell_xyz: Tuple[int,int,int], remaining_states: Set[StructureRotation]):
         x,y,z = cell_xyz
         if not remaining_states.issubset(self.state_space[x][y][z]):
-            raise Exception(f"[{x},{y},{z}] Tried to colappse a state to values that are not available in current superposition: {remaining_states} ⊄ {self.state_space[x][y][z]}")
+            raise CollapseOutsideOfSuperpositionException(f"[{x},{y},{z}] Tried to colappse a state to values that are not available in current superposition: {remaining_states} ⊄ {self.state_space[x][y][z]}")
         elif remaining_states == self.state_space[x][y][z]:
             # there is no change and nothing needs to be propagated further
             return
@@ -129,7 +136,38 @@ class WaveFunctionCollapse:
             neighbour_remaining_states = neighbour_allowed_states("z_plus").intersection(self.state_space[x][y][z+1])
             self.propagate((x,y,z+1), neighbour_remaining_states)
     
+    def random_cell(self):
+        def uncollapsed_cells():
+            for x,y,z in self._cell_coordinates():
+                cell = self.state_space[x][y][z]
+                if len(cell) > 1:
+                    yield (x,y,z)
+        next_cells_to_collapse = list(uncollapsed_cells())
+        cell_xyz: Tuple[int, int, int] = random.choice(next_cells_to_collapse)
+        return cell_xyz
+    
+    def random_state_from_superposition(self, state_superposition):
+        assert len(state_superposition) >= 2
+        if self.structure_weights:
+            collapsed_state = random.choices(state_superposition, 
+                                                weights=list(self.structure_weights(state_superposition)))[0]
+        else:
+            collapsed_state = random.choice(state_superposition)
+        return collapsed_state
+
+    def collapse_random_cell(self):
+        cell_xyz = self.random_cell()
+        x,y,z = cell_xyz
+        state_superposition = list(self.state_space[x][y][z])
+        collapsed_state = self.random_state_from_superposition(state_superposition)
+        self.collapse_cell_to_state(cell_xyz, collapsed_state)
+
     def collapse(self) -> bool:
+        """Sequentially collapse minimal entropy cells until converganze
+
+        Returns:
+            bool: True if all cells got collapsed, False if the algorithm got stuck
+        """
             
         while not self.collapsed():
             min_entropy = self.min_entropy()
@@ -143,10 +181,8 @@ class WaveFunctionCollapse:
             x,y,z = cell_xyz
 
             state_superposition = list(self.state_space[x][y][z])
-            assert len(state_superposition) >= 2
-            collapsed_state: StructureRotation = random.choice(state_superposition)
-
-            self.collapse_cell(cell_xyz, collapsed_state)
+            collapsed_state = self.random_state_from_superposition(state_superposition)
+            self.collapse_cell_to_state(cell_xyz, collapsed_state)
         
         return True
     

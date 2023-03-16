@@ -6,6 +6,8 @@ Define the search space through buildarea in XZ plane
 /setbuildarea ~ ~ ~ ~100 ~ ~100
 """
 
+import heapq
+import random
 import sys
 
 from gdpc import Block, Editor, __url__
@@ -97,6 +99,19 @@ def get_heights(editor, buildArea):
     return heights
 
 
+def select_solutioin(solutions):
+    # normalize terraform distance by build area
+    # solution = min(solutions, key=lambda r: float(r[3])/(r[1][0]*r[1][1]))
+    if not isinstance(solutions, list):
+        solutions = list(solutions)
+
+    solution_pool = []
+    for size in set(map(lambda s: s[1], solutions)):
+        solutions_with_size = filter(lambda s: s[1] == size, solutions)
+        best_solutions_in_size = heapq.nsmallest(2, solutions_with_size, key=lambda s: s[3])
+        solution_pool += best_solutions_in_size
+    solution = random.choice(solution_pool)
+    return solution
 
 
 if __name__ == '__main__':
@@ -126,7 +141,7 @@ if __name__ == '__main__':
 
     buffer=2
     solutions = score_all_possible_buildregions(heights, square_sidelenght=11, min_adjecent_squares=2, max_adjecent_squares=5, buffer=buffer)
-    best_solution = min(solutions, key=lambda r: r[3])
+    best_solution = select_solutioin(solutions)
 
     first = setY(buildArea.offset,0) + addY(ivec2(*best_solution[0]), best_solution[2])
     last = first + addY(ivec2(*best_solution[1]), 0)

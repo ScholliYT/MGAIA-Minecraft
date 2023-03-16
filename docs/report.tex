@@ -162,11 +162,11 @@ fontsize=11pt
 
 \newgeometry{left=3cm, right=4cm, top=3cm, bottom=3cm}
 
-\section*{Abstract}
+% \section*{Abstract}
 
 
 \section{Introduction}
-The world in modern games are becoming very large, 
+The playable worlds in modern games are becoming very large, 
 requiring lots of manual work by designers 
 to build and place buildings and other elements of the world. 
 Recently, the use of procedural content generation (PCG) in this area 
@@ -226,18 +226,54 @@ directions for improvement.
 
 \section{Building Placement}
 
-% Buffer around building region (improvement: make buffer require blocks of smaller (not equal) height)
-
+The terrain in Minecraft can be very different from one location to another. 
+Hence, placing a house in an area can't be don't totally deterministically 
+because it should be adapting to the shape of the terrain 
+to make it believable. 
+For this task, a method for terrain adaptive placement has been developed, 
+which is still very mathematical. 
+First, the terraforming distance \autoref{eq_terraform_distance} is defined 
+as the absolute number of blocks that have to be added 
+and removed to perfectly smooth a fixed size area $l \times w$ 
+at a certain position $x,z$ to a certain height level $y$. 
+This distance measure can be used to find the smoothest possible surface in a given region. 
+The search can be implemented as an optimization problem, 
+but it was decided to simply brute force the optimal surface, 
+since the number of possible surfaces is small enough. 
+To do this, an algorithm simply tries all possible sizes at 
+all allowable positions in the building region for 
+different $y$ and calculates the terraform distance for each solution. 
 % Scanner fails to handle water and starts building on sea level or above water
 % Same problem with ice blocks
+Unfortunately, the algorithm likely chooses naturally flat areas 
+such as frozen ice or ocean water, which is not desired. 
+Therefore, a constraint to forbid the height $y=63$, which is just above the sea level, was added.
+% Problem with normalization
+However, this approach has the problem that smaller building areas are preferred, 
+since their terraform distance is always smaller than that of a larger area. 
+To account for this, the terraform distance can be normalized by the size of the surface \autoref{eq_normalized_terraform_distance}. 
+However, it has been found that it is very difficult to choose the coefficient $c \in \mathbb{R}$ for the normalization in a good way.
+In order to still choose areas that are not minimally small, 
+the algorithm was modified to randomly choose from the two best solutions per size.
+
+\begin{equation}
+  \Delta_{TF} (l,w,x,y,z) = \sum_{i=x}^{x+l} \sum_{j=z}^{z+w} | y - heightmap(i,j) |
+  \label{eq_terraform_distance}
+\end{equation}
+
+\begin{equation}
+  \Delta_{NTF} (l,w,x,y,z) = \frac{\Delta_{TF} (l,w,x,y,z)}{lw^c}
+  \label{eq_normalized_terraform_distance}
+\end{equation}
+
+% Buffer around building region (improvement: make buffer require blocks of smaller (not equal) height)
 
 
 \section{Building Generation}
 This section describes the generation of buildings using the wave function collapse (WFC) algorithm.
 
-
-
 \subsection{Structure Building Blocks}
+\label{sec_strucutre_building_blocks}
 In order to use the WFC algorithm a set of small structures, sometimes called tiles or prefabs, 
 is required to combine them to a larger structure, i.e. a building. 
 These structures can in general be of any granularity from single blocks 
@@ -348,6 +384,7 @@ randomized buildings which are still believable
 because they are only built out of valid combinations of structure building blocks. 
 
 \subsubsection{Rule Set}
+\label{sec_rule_set}
 To achieve this, it is necessary to define the adjacency rules for each structure. 
 These define how structures can be placed next to each other, 
 whereby rotations of the structures must also be taken into account. 
@@ -419,6 +456,24 @@ Using this structure and the appropriate rules that define which sides
 of an actual building structure need to be placed next to air, 
 one can enforce closed buildings by collapsing the outermost rectangle 
 of cells in the state-space to air.
+However, this will change the behavior of the WFC algorithm
+because cells next to the now air cells have lower entropy 
+and will be collapsed before any center cell.
+This results in structures that can only be placed in the center
+(e.g. center, courtyard, inner-corner)
+almost never being selected. 
+To solve this, a few (i.e. 3) randomly selected cells are collapsed 
+before starting with the real WFC algorithm which will 
+use the min entropy heuristic for cell selection.
+The final result of this step can be seen in \autoref{fig_generated_building}.
+Additionally, the creation process can be observed in a video\footnote{\url{https://cloud.fachschaften.org/s/iHzxSNXsZpsr46Z}}.
+
+\begin{figure}[ht]
+  \includegraphics[width=\textwidth]{images/buildings/generated_building_wfc.png}
+  \caption{Building(s) generated with the WFC algorithm.}
+  \label{fig_generated_building}
+\end{figure}
+
 
 \section{Interior Design}
 
@@ -492,15 +547,53 @@ The results can be seen in
 
 
 \section{Overall Results}
+This section shows some results from the end to end building generation 
+involving the search for a build area and the generation of the building.
+The results can be seen in \autoref{fig_generated_medium_building_real_world}.
+There is also a video\footnote{\url{https://cloud.fachschaften.org/s/c5NKyaDjYeLwEer}} of the generation process.
 
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_small_building.png}
+    \caption{Small-sized building.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_medium_building.png}
+    \caption{Medium-sized building.}
+  \end{subfigure}
+  \caption{Buildings generated with the WFC algorithm and placed in a realistic Minecraft world.}
+  \label{fig_generated_medium_building_real_world}
+\end{figure}
+
+\newpage
 \section{Discussion}
 % Summarize results
-
+Within the scope of this assignment a working solution 
+to generate believable buildings in Minecraft was implemented.
+It consists of a build area selection and building generation step, 
+which is based on the WFC algorithm and a handcrafted set of structures and rules.
 
 % Limitations
 %   Can't scan structures with block state, e.g. buring campfires.
 %   Can't build structures with lamps hanging from some block
-%   No duplicate structures with different interior design
+%   No duplicate structures with different interior design built so far
+%   Hard to define global rules for WFC, e.g. if there is at least one roofhouse there must be stairs.
+The current implementation suffers from some issues which can be improved on.
+The structure scanner and builder introduced in \autoref{sec_strucutre_building_blocks} 
+struggle to handle stateful blocks like a burning campfire 
+or blocks that require other blocks to stick to like lamps or banners.
+Another point is the limited expressiveness of the rule set, with which it is not possible to define global rules. 
+For example, it would be advisable to define that there must be at least one element with a staircase when a second floor is built.
+This is currently not possible as only direct adjacency relationships can be expressed.
+In addition, the manual maintenance of the rule set, as described in \autoref{sec_rule_set}, 
+is very laborious, and another abstraction level would be useful to reduce the manual work. 
+Last, it was unfortunately not possible in the time frame to build more structures with interiors. 
+Here, however, it would also be conceivable to place the individual interior elements 
+such as cabinets, lamps, stairs, etc. by a WFC algorithm in the building and leave the original structures themselves blank. 
+
+
 
 
 % Directions for improvement

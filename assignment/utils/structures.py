@@ -2,7 +2,8 @@
 empty_space_air = "empty-space-air"
 
 # ground floors
-brickhouse_entrance = "decoration/brickhouse-entrance"
+brickhouse_entrance = "brickhouse-entrance"
+brickhouse_entrance_stairs = "decoration/brickhouse-entrance"
 brickhouse_middle = "brickhouse-middle"
 brickhouse_balcony = "brickhouse-balcony"
 brickhouse_corner = "decoration/brickhouse-corner"
@@ -13,7 +14,8 @@ brickhouse_inner_corner_m2m = "brickhouse-inner-corner-m2m"
 # roofs
 brickhouse_small_window_flat_roof = "brickhouse-small-window-flat-roof"
 brickhouse_big_window_flat_roof = "brickhouse-big-window-flat-roof"
-brickhouse_roofhouse_corner = "decoration/brickhouse-roofhouse-corner"
+brickhouse_roofhouse_corner = "brickhouse-roofhouse-corner"
+brickhouse_roofhouse_corner_stairs = "decoration/brickhouse-roofhouse-corner"
 brickhouse_roofhouse_middle = "decoration/brickhouse-roofhouse-middle"
 brickhouse_roofhouse_middle_to_flat = "brickhouse-roofhouse-middle-to-flat"
 brickhouse_roofhouse_middle_to_flat_mirrored_x = "brickhouse-roofhouse-middle-to-flat-mirrored-x"

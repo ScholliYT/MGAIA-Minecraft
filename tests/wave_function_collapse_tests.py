@@ -21,7 +21,7 @@ class WaveFunctionCollaplse1x1x1Test(unittest.TestCase):
 
         self.assertFalse(wfc.collapsed())
         some_structure_rotation = next(iter(wfc.state_space[0][0][0]))
-        wfc.collapse_cell((0,0,0), some_structure_rotation)
+        wfc.collapse_cell_to_state((0,0,0), some_structure_rotation)
         self.assertTrue(wfc.collapsed())
 
 
@@ -35,15 +35,15 @@ class WaveFunctionCollaplse2x1x2Test(unittest.TestCase):
         self.assertFalse(self.wfc.collapsed())
 
     def test_converges_on_first_collapse(self):
-        self.wfc.collapse_cell((0,0,0), StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell_to_state((0,0,0), StructureRotation(brickhouse_entrance, 0))
         self.assertIn(StructureRotation(brickhouse_entrance, 0), self.wfc.state_space[0][0][0])
         self.assertIn(StructureRotation(brickhouse_entrance, 3), self.wfc.state_space[0][0][1])
         self.assertIn(StructureRotation(brickhouse_entrance, 1), self.wfc.state_space[1][0][0])
         self.assertIn(StructureRotation(brickhouse_entrance, 2), self.wfc.state_space[1][0][1])
 
     def test_converges_after_two_cell_collapses(self):
-        self.wfc.collapse_cell((0,0,0), StructureRotation(brickhouse_entrance, 0))
-        self.wfc.collapse_cell((1,0,1), StructureRotation(brickhouse_entrance, 2))
+        self.wfc.collapse_cell_to_state((0,0,0), StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell_to_state((1,0,1), StructureRotation(brickhouse_entrance, 2))
         self.assertIn(StructureRotation(brickhouse_entrance, 0), self.wfc.state_space[0][0][0])
         self.assertIn(StructureRotation(brickhouse_entrance, 3), self.wfc.state_space[0][0][1])
         self.assertIn(StructureRotation(brickhouse_entrance, 1), self.wfc.state_space[1][0][0])
@@ -93,7 +93,7 @@ class WaveFunctionCollaplse3x1x3Test(unittest.TestCase):
     
     def test_uses_center_tile(self):
         
-        self.wfc.collapse_cell([0,0,0], StructureRotation(brickhouse_entrance, 0))
+        self.wfc.collapse_cell_to_state([0,0,0], StructureRotation(brickhouse_entrance, 0))
 
         possible_picks = [(StructureRotation(brickhouse_center, r) in self.wfc.state_space[1][0][1]) for r in range(4)]
 

@@ -115,41 +115,59 @@ def deterministic_building() -> List[List[List[Tuple[Structure, int]]]]:
     return building
 
 
-def random_building(size: Tuple[int,int,int] = (9,2,9)) -> WaveFunctionCollapse:
+def structure_weights(structures: List[StructureRotation]):
+    for s in structures:
+        if s.structure_name == empty_space_air:
+            yield 0.1
+        elif s.structure_name in (brickhouse_roofhouse_courtyard, brickhouse_center, brickhouse_inner_corner_m2m):
+            yield 300.0
+        elif s.structure_name in (brickhouse_roofhouse_middle_to_flat):
+            yield 5.0
+        else: 
+            yield 1.0
+    
 
-    wfc = WaveFunctionCollapse(size, structure_adjecencies)
+def random_building(size: Tuple[int,int,int] = (5,2,5)) -> WaveFunctionCollapse:
+
+    wfc = WaveFunctionCollapse(size, structure_adjecencies, structure_weights)
 
     def reinit():
         collapse_to_air_on_outer_rectangle(wfc)
 
-        # wfc.collapse_cell([0,0,0], StructureRotation(empty_space_air, 0))
-        # wfc.collapse_cell([3,0,3], StructureRotation(empty_space_air, 0))
+        # wfc.collapse_random_cell()
+        wfc.collapse_random_cell()
+        wfc.collapse_random_cell()
+        wfc.collapse_random_cell()
+        # wfc.collapse_random_cell()
+
+        # wfc.collapse_cell_to_state([0,0,0], StructureRotation(empty_space_air, 0))
+        # wfc.collapse_cell_to_state([3,0,3], StructureRotation(empty_space_air, 0))
 
 
-        # wfc.collapse_cell([1,0,1], StructureRotation(brickhouse_entrance, 0))
-        # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_entrance, 3))
-        # wfc.collapse_cell([1,0,3], StructureRotation(brickhouse_middle, 3))
-        # wfc.collapse_cell([1,0,4], StructureRotation(brickhouse_middle, 3))
-        # wfc.collapse_cell([1,0,5], StructureRotation(brickhouse_middle, 3))
+        # wfc.collapse_cell_to_state([1,0,1], StructureRotation(brickhouse_entrance, 0))
+        # wfc.collapse_cell_to_state([1,0,5], StructureRotation(brickhouse_entrance, 3))
+        # wfc.collapse_cell_to_state([1,0,3], StructureRotation(brickhouse_middle, 3))
+        # wfc.collapse_cell_to_state([1,0,4], StructureRotation(brickhouse_middle, 3))
+        # wfc.collapse_cell_to_state([1,0,5], StructureRotation(brickhouse_middle, 3))
 
 
-        # wfc.collapse_cell([5,0,5], StructureRotation(brickhouse_inner_corner_m2m, 0))
-        # wfc.collapse_cell([13,0,13], StructureRotation(brickhouse_center, 0))
+        # wfc.collapse_cell_to_state([5,0,5], StructureRotation(brickhouse_inner_corner_m2m, 0))
+        # wfc.collapse_cell_to_state([13,0,13], StructureRotation(brickhouse_center, 0))
 
-        # wfc.collapse_cell([8,0,8], StructureRotation(brickhouse_courtyard, 0))
-        # wfc.collapse_cell([11,0,4], StructureRotation(brickhouse_courtyard, 0))
+        # wfc.collapse_cell_to_state([4,0,4], StructureRotation(brickhouse_courtyard, 0))
+        # wfc.collapse_cell_to_state([11,0,4], StructureRotation(brickhouse_courtyard, 0))
 
-        # wfc.collapse_cell([1,1,3], StructureRotation(brickhouse_roofhouse_middle_to_flat, 0))
-
+        # wfc.collapse_cell_to_state([1,1,3], StructureRotation(brickhouse_roofhouse_middle_to_flat, 0))
         
-
-
-
-
-        # wfc.collapse_cell([6,0,6], StructureRotation(brickhouse_entrance, 2))
+        # wfc.collapse_cell_to_state([6,0,6], StructureRotation(brickhouse_entrance, 2))
+    
+    def building_criterion_met(wfc):
+        air_only = set(wfc.used_structures()).issubset(set([*all_rotations(empty_space_air)]))
+        contains_door = any([StructureRotation(brickhouse_entrance, r) in set(wfc.used_structures()) for r in range(4)])
+        return (not air_only) and contains_door
 
     retries = wfc.collapse_with_retry(reinit=reinit)
-    while set(wfc.used_structures()).issubset(set([*all_rotations(empty_space_air)])): # used air structures only
+    while not building_criterion_met(wfc): # used air structures only
         wfc._initialize_state_space_superposition()
         retries += 1 + wfc.collapse_with_retry(reinit=reinit)
     print(f"WFC collapsed after {retries} retries")
@@ -167,31 +185,30 @@ def wfc_state_to_minecraft_blocks(building: List[List[List[StructureRotation]]])
 
 
 
-def build_brickhouse(editor: Editor, building: List[List[List[Tuple[Structure, int]]]]):
+def build_brickhouse(editor: Editor, building: List[List[List[Tuple[Structure, int]]]], place_air=True):
 
     assert len(building[0]) in (1,2), "Only buildings of height 1 or 2 are supported"
 
     # same for all strucures on ground floor
     gf_strucutre_size = ivec3(11,7,11)
 
-    for row_idx, building_row in tqdm(list(enumerate(reversed(building)))):
-        with editor.pushTransform(Transform(translation=ivec3(row_idx*gf_strucutre_size.x, 0, 0))):
-            for col_idx, (structure, rotation) in enumerate(building_row[0]):
-                with editor.pushTransform(Transform(translation=ivec3(0, 0, col_idx*gf_strucutre_size.z))):
-                    build_structure(editor, structure, rotation)
-                editor.flushBuffer()
-                time.sleep(0.1)
-    print("Ground floor finished")
-
-    if len(building[0]) > 1:
+    def build_layer(layer: int):
         for row_idx, building_row in tqdm(list(enumerate(reversed(building)))):
-            with editor.pushTransform(Transform(translation=ivec3(row_idx*gf_strucutre_size.x, gf_strucutre_size.y, 0))):
-                for col_idx, (structure, rotation) in enumerate(building_row[1]):
+            with editor.pushTransform(Transform(translation=ivec3(row_idx*gf_strucutre_size.x, layer*gf_strucutre_size.y, 0))):
+                for col_idx, (structure, rotation) in enumerate(building_row[layer]):
                     with editor.pushTransform(Transform(translation=ivec3(0, 0, col_idx*gf_strucutre_size.z))):
+                        if not place_air and structure.name == empty_space_air:
+                            continue
+
                         build_structure(editor, structure, rotation)
                     editor.flushBuffer()
                     time.sleep(0.1)
+    
+    build_layer(0)
+    print("Ground floor finished")
 
+    build_layer(1)
+    print("Top floor finished")
     editor.flushBuffer()
 
 
@@ -199,14 +216,14 @@ def main():
     ED = Editor(buffering=True)
 
     try:
-        ED.transform @= Transform(translation=ivec3(-110, -1, 400))
+        ED.transform @= Transform(translation=ivec3(-110, -1, 780))
 
-        print("Building house")
+        print("Building house...")
         # building = deterministic_building()
 
-        wfc = random_building()
+        wfc = random_building(size=(11,2,11))
         building = wfc_state_to_minecraft_blocks(wfc.collapsed_state())
-        build_brickhouse(editor=ED, building=building)
+        build_brickhouse(editor=ED, building=building, place_air=False)
 
 
 
