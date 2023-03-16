@@ -551,6 +551,16 @@ This section shows some results from the end to end building generation
 involving the search for a build area and the generation of the building.
 The results can be seen in \autoref{fig_generated_medium_building_real_world}.
 There is also a video\footnote{\url{https://cloud.fachschaften.org/s/c5NKyaDjYeLwEer}} of the generation process.
+The algorithm is also capable to build buildings on more challenging 
+environments as shown in \autoref{fig_generated_medium_building_real_world_medium}.
+The algorithm also handles already existing structures, e.g. villages,
+very well and does not deconstruct them (see \autoref{fig_generated_medium_building_real_world_difficult}).
+However, the algorithm also sometimes generates unwanted results such as 
+multiple unconnected houses. 
+This can happen if the build area is "too" large. 
+Additionally, the algorithm places buildings on a surface which is assumed to be flat,
+resulting in overhangs (see \autoref{fig_generated_medium_building_real_world_difficult}).
+
 
 \begin{figure}[ht]
   \centering
@@ -563,8 +573,38 @@ There is also a video\footnote{\url{https://cloud.fachschaften.org/s/c5NKyaDjYeL
     \includegraphics[width=\textwidth]{images/end2end/generated_medium_building.png}
     \caption{Medium-sized building.}
   \end{subfigure}
-  \caption{Buildings generated with the WFC algorithm and placed in a realistic Minecraft world.}
+  \caption{Buildings generated with the WFC algorithm and placed in a realistic Minecraft world (easy).}
   \label{fig_generated_medium_building_real_world}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_medium_building_on_island.png}
+    \caption{Medium-sized building on a small island.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_medum_building_next_to_forest.png}
+    \caption{Medium-sized building next to a forest.}
+  \end{subfigure}
+  \caption{Buildings generated with the WFC algorithm and placed in a realistic Minecraft world (medium).}
+  \label{fig_generated_medium_building_real_world_medium}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_large_building_next_to_village.png}
+    \caption{Large-sized building next to a Village. The building does not intersect with the existing buildings.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{images/end2end/generated_double_house_overhang.png}
+    \caption{Two small-sized building in forest. Note the overhang of one building.}
+  \end{subfigure}
+  \caption{Buildings generated with the WFC algorithm and placed in a realistic Minecraft world (hard).}
+  \label{fig_generated_medium_building_real_world_difficult}
 \end{figure}
 
 \newpage
@@ -584,6 +624,9 @@ The current implementation suffers from some issues which can be improved on.
 The structure scanner and builder introduced in \autoref{sec_strucutre_building_blocks} 
 struggle to handle stateful blocks like a burning campfire 
 or blocks that require other blocks to stick to like lamps or banners.
+The next step, placement, currently struggles to find "the largest reasonable" area 
+and sometimes generates way to large houses (because of the random selection).
+If one could find good coefficients for the normalized terraform distance, it would work better.
 Another point is the limited expressiveness of the rule set, with which it is not possible to define global rules. 
 For example, it would be advisable to define that there must be at least one element with a staircase when a second floor is built.
 This is currently not possible as only direct adjacency relationships can be expressed.

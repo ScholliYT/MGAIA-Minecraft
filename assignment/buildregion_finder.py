@@ -99,7 +99,7 @@ def get_heights(editor, buildArea):
     return heights
 
 
-def select_solutioin(solutions):
+def select_solution(solutions):
     # normalize terraform distance by build area
     # solution = min(solutions, key=lambda r: float(r[3])/(r[1][0]*r[1][1]))
     if not isinstance(solutions, list):
@@ -141,7 +141,7 @@ if __name__ == '__main__':
 
     buffer=2
     solutions = score_all_possible_buildregions(heights, square_sidelenght=11, min_adjecent_squares=2, max_adjecent_squares=5, buffer=buffer)
-    best_solution = select_solutioin(solutions)
+    best_solution = select_solution(solutions)
 
     first = setY(buildArea.offset,0) + addY(ivec2(*best_solution[0]), best_solution[2])
     last = first + addY(ivec2(*best_solution[1]), 0)

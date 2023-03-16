@@ -8,7 +8,7 @@ from gdpc.vector_tools import addY, setY
 from glm import ivec2, ivec3
 
 from assignment.brickhouse import build_brickhouse, random_building, wfc_state_to_minecraft_blocks
-from assignment.buildregion_finder import get_build_area, get_heights, select_solutioin
+from assignment.buildregion_finder import get_build_area, get_heights, select_solution
 from assignment.utils.buildregion import score_all_possible_buildregions
 from assignment.utils.wave_function_collaplse_util import (
     print_state,
@@ -25,14 +25,14 @@ def main():
 
         buffer=2
         square_sidelenght = 11
-        min_adjecent_structures=3
+        min_adjecent_structures=2
         max_adjecent_structures=6
         solutions = list(score_all_possible_buildregions(heights, 
                                                          square_sidelenght=square_sidelenght, 
                                                          min_adjecent_squares=min_adjecent_structures, 
                                                          max_adjecent_squares=max_adjecent_structures, 
                                                          buffer=buffer))
-        solution = select_solutioin(solutions)       
+        solution = select_solution(solutions)       
         region_origin, region_size, region_y, distance = solution
 
         first = setY(buildArea.offset,0) + addY(ivec2(*region_origin), region_y)

@@ -23,8 +23,19 @@ Below are short descriptions on how to use the most important scripts
 that `e2e_brickhouse.py` is composed of.
 
 
+### End 2 End (start here)
+See `e2e_brickhouse.py`
+
+1. Set the build area in Minecraft using `/setbuildarea ~ ~ ~ ~99 ~ ~99` (or similar)
+2. Run `e2e_brickhouse.py`
+3. Wait for the process to finish which may take a few minutes
+
 ### Building Placement
 See `buildregion_finder.py`
+
+1. Set the build area in Minecraft using `/setbuildarea ~ ~ ~ ~99 ~ ~99` (or similar)
+2. Run `buildregion_finder.py`
+3. The selected buildregion will be marked with white and red wool blocks.
 
 ### Structure Scanning and Building
 
