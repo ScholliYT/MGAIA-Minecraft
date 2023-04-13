@@ -1,4 +1,6 @@
 # MGAIA-Minecraft
+[![wakatime](https://wakatime.com/badge/user/13925bfd-efdd-4399-ae64-d0247d6b76cb/project/2d70d0c1-e75f-40b0-96a8-39ea1d139c69.svg)](https://wakatime.com/badge/user/13925bfd-efdd-4399-ae64-d0247d6b76cb/project/2d70d0c1-e75f-40b0-96a8-39ea1d139c69)
+
 This project was realized for the first assignment of the course Modern Game AI Algorithms at Leiden University on procedural content generation in Minecraft.
 
 This project uses the wave function collapse algorithm to generate randomized realistic buildings in Minecraft.
