@@ -3,6 +3,8 @@ This project was realized for the first assignment of the course Modern Game AI 
 
 This project uses the wave function collapse algorithm to generate randomized realistic buildings in Minecraft.
 
+Videos: [generate building in flat world](https://cloud.fachschaften.org/s/iHzxSNXsZpsr46Z), [generate building in real world](https://cloud.fachschaften.org/s/c5NKyaDjYeLwEer)
+
 ![Close up of some building structures](docs/images/structures/building-structures-close-up.png)
 ![Large city of buildings](docs/images/buildings/large-city.png)
 ![Medium-sized building in real world](docs/images/end2end/generated_medium_building.png)
